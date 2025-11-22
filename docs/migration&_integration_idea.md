@@ -1,4 +1,4 @@
-**Next.js Migration Plan**
+**Next.js Migration Plan **
 
 - Foundations: Create a Next.js App Router project with TypeScript, Tailwind, shadcn/ui; mirror existing global styles and assets; set up **app/(routes)** structure. Keep Vite app as reference during migration.
 - Routing map:
