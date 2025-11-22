@@ -26,11 +26,11 @@ Update the file after completing each sub-task, not just after completing an ent
 
 ## Tasks
 
-- [ ] 0.0 Create feature branch
-- [ ] 1.0 Review current front-end and PRD to document the exact UI/UX to preserve (use existing Vite screens as the baseline)
-- [ ] 2.0 Scaffold Next.js App Router foundation (TypeScript, Tailwind, shadcn/ui) mirroring current global styles/assets
-- [ ] 3.0 Port all routes/screens to Next.js with identical UI/UX (learn, theme, intro→practice→summary, reflection, medal, profile)
-- [ ] 4.0 Implement client state and persistence (Zustand + localStorage) for progress gating, streaks, and time tracking
+- [x] 0.0 Create feature branch
+- [x] 1.0 Review current front-end and PRD to document the exact UI/UX to preserve (use existing Vite screens as the baseline)
+- [x] 2.0 Scaffold Next.js App Router foundation (TypeScript, Tailwind, shadcn/ui) mirroring current global styles/assets
+- [x] 3.0 Port all routes/screens to Next.js with identical UI/UX (learn, theme, intro→practice→summary, reflection, medal, profile)
+- [x] 4.0 Implement client state and persistence (Zustand + localStorage) for progress gating, streaks, and time tracking
 - [ ] 5.0 Add data layer toggle with React Query + Axios aligned to API/mock shapes and media fields
 - [ ] 6.0 Integrate API endpoints and submission flows with `order_index` gating and error/loading handling
 - [ ] 7.0 Testing and QA (lint/build, parity checks against current front-end, unit tests for gating/medal helpers)
