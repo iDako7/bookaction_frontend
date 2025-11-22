@@ -26,7 +26,14 @@
 
 ## User Stories
 
-**(unchanged)**
+- As a learner, I see all modules with their themes and concept names so I can choose where to start.
+- As a learner, I must complete concepts in order; I can revisit completed concepts anytime.
+- As a learner, I can read a module theme intro (story + media + question) before concept 1.
+- As a learner, I can step through a concept intro: definition/why it works, good example, bad example (with media).
+- As a learner, I can take concept practice, submit answers, and see correctness + explanation.
+- As a learner, I can read concept summaries and see what’s next.
+- As a learner, I get a reflection prompt after finishing a module.
+- As a learner, I can view my Medal and essential Profile info.
 
 ## Functional Requirements (Updated)
 
@@ -84,7 +91,10 @@
 
 ## Design Considerations
 
-**(unchanged)**
+- Learn page inspired by Duolingo path: clear sequencing, lock states, progress indicators.
+- Tone for teens–young adults (13–24): supportive, concise microcopy, clear next steps.
+- Stack: Next.js, React, TypeScript, Tailwind, Shadcn UI. Show `/media/panda.png` with safe fallbacks.
+- Practice UX: immediate feedback after submit; inline rationale; allow retry.
 
 ## Technical Considerations (Updated)
 
@@ -124,15 +134,22 @@
 
 ## Dependencies
 
-**(unchanged)**
+- Content source: `docs/course_content.json` (two modules; `order_index` 1 = Communication and Boundaries, `order_index` 2 = Healthy vs. Unhealthy Relationships).
+- Future: backend APIs for modules/concepts/reflection; Medal/Profile APIs to be added later.
 
 ## Assumptions
 
-**(unchanged)**
+- Two modules are sufficient for MVP; future modules follow the same schema.
+- Media assets resolve locally; fallback placeholder if not.
+- Question types limited to single or multiple choice.
 
 ## Success Metrics
 
-**(unchanged)**
+- Task success: % completing a concept flow (intro → practice submit → summary) without dead ends.
+- Efficiency: median time per concept flow within target window (e.g., 4–6 minutes).
+- Errors/friction: invalid submissions or blocked navigation <5% of attempts.
+- Perceived ease: post-session ease rating averages ≥4/5.
+- Findability: ≥90% can reach Medal and Profile from Learn without guidance.
 
 ## MVP Validation Criteria (Updated)
 
