@@ -131,17 +131,17 @@ export function getModulesOverview(): ModulesOverviewResponse {
  * Mock implementation of GET /api/modules/:moduleId/theme
  */
 export function getModuleTheme(moduleId: number): ModuleTheme {
-  const module = moduleMap.get(moduleId);
-  if (!module) {
+  const courseModule = moduleMap.get(moduleId);
+  if (!courseModule) {
     throw new Error(`Module ${moduleId} not found`);
   }
 
   return {
-    title: module.theme.title,
-    context: module.theme.context,
-    mediaUrl: module.theme.media_url,
-    mediaType: module.theme.media_type,
-    question: module.theme.question,
+    title: courseModule.theme.title,
+    context: courseModule.theme.context,
+    mediaUrl: courseModule.theme.media_url,
+    mediaType: courseModule.theme.media_type,
+    question: courseModule.theme.question,
   };
 }
 
@@ -211,7 +211,7 @@ export function submitQuizAnswer(
   }
 
   const { quiz } = quizData;
-  const correctIndices = quiz.correct_option_index;
+  const correctIndices = quiz.correct_option_index as number[];
 
   // Calculate score
   let score = 0;
@@ -252,15 +252,15 @@ export function getConceptSummary(conceptId: number): ConceptSummary {
  * Mock implementation of GET /api/modules/:moduleId/reflection
  */
 export function getModuleReflection(moduleId: number): ModuleReflection {
-  const module = moduleMap.get(moduleId);
-  if (!module) {
+  const courseModule = moduleMap.get(moduleId);
+  if (!courseModule) {
     throw new Error(`Module ${moduleId} not found`);
   }
 
   return {
     type: "text",
-    prompt: module.reflection.module_summary,
-    mediaUrl: module.reflection.module_summary_media_url,
+    prompt: courseModule.reflection.module_summary,
+    mediaUrl: courseModule.reflection.module_summary_media_url,
   };
 }
 
@@ -324,4 +324,5 @@ export function getConceptIdsForModule(moduleId: number): number[] {
     .filter(([, data]) => data.moduleId === moduleId)
     .map(([id]) => id);
 }
+
 
