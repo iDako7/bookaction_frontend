@@ -1,9 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { Slot } from "@radix-ui/react-slot@1.1.2";
-import { VariantProps, cva } from "class-variance-authority@0.7.1";
-import { PanelLeftIcon } from "lucide-react@0.487.0";
+import { Slot } from "@radix-ui/react-slot";
+import { VariantProps, cva } from "class-variance-authority";
+import { PanelLeftIcon } from "lucide-react";
 
 import { useIsMobile } from "./use-mobile";
 import { cn } from "./utils";
@@ -565,8 +565,8 @@ function SidebarMenuAction({
         // Increases the hit area of the button on mobile.
         "after:absolute after:-inset-2 md:after:hidden",
         "peer-data-[size=sm]/menu-button:top-1",
-        "peer-data-[size=default]/menu-button:top-1.5",
-        "peer-data-[size=lg]/menu-button:top-2.5",
+        "peer-data-[size=default]/menu-button:top-1",
+        "peer-data-[size=lg]/menu-button:top-2",
         "group-data-[collapsible=icon]:hidden",
         showOnHover &&
           "peer-data-[active=true]/menu-button:text-sidebar-accent-foreground group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 md:opacity-0",
@@ -589,8 +589,8 @@ function SidebarMenuBadge({
         "text-sidebar-foreground pointer-events-none absolute right-1 flex h-5 min-w-5 items-center justify-center rounded-md px-1 text-xs font-medium tabular-nums select-none",
         "peer-hover/menu-button:text-sidebar-accent-foreground peer-data-[active=true]/menu-button:text-sidebar-accent-foreground",
         "peer-data-[size=sm]/menu-button:top-1",
-        "peer-data-[size=default]/menu-button:top-1.5",
-        "peer-data-[size=lg]/menu-button:top-2.5",
+        "peer-data-[size=default]/menu-button:top-1",
+        "peer-data-[size=lg]/menu-button:top-2",
         "group-data-[collapsible=icon]:hidden",
         className,
       )}

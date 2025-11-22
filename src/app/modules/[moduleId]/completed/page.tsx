@@ -16,14 +16,19 @@ export default function ModuleCompletedPage() {
 
   const moduleId = Number(params.moduleId);
   const module = modulesData.find(m => m.id === moduleId);
-  const { completedConcepts } = useProgressStore();
+  const { completedConcepts, isConceptCompleted, isReflectionCompleted } = useProgressStore();
   const totalConcepts = modulesData.reduce((sum, m) => sum + m.concepts.length, 0);
 
   if (!module) return <div>Module not found</div>;
 
+  const isAllModulesCompleted = modulesData.every((mod) => {
+    const conceptsDone = mod.concepts.every((concept) => isConceptCompleted(concept.id));
+    return conceptsDone && isReflectionCompleted(mod.id);
+  });
+
   const handleBackToLearn = () => {
     // Check if all modules completed (all concepts completed)
-    if (completedConcepts.length === totalConcepts) {
+    if (isAllModulesCompleted) {
       router.push('/medal');
     } else {
       router.push('/');

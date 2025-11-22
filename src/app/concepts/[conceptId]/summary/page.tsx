@@ -6,10 +6,12 @@ import { Card } from '@/components/Card';
 import { Button } from '@/components/Button';
 import { CheckCircle, Lightbulb, Target } from 'lucide-react';
 import { conceptSummaries, conceptTutorials, modulesData } from '@/lib/mockData';
+import { useProgressStore } from '@/store/useProgressStore';
 
 export default function ConceptSummaryPage() {
   const params = useParams();
   const router = useRouter();
+  const { completeConceptStage } = useProgressStore();
   
   if (!params) return null;
 
@@ -36,6 +38,7 @@ export default function ConceptSummaryPage() {
   };
 
   const handleContinue = () => {
+    completeConceptStage(conceptId, 'summary');
     router.push(getNextStep());
   };
 

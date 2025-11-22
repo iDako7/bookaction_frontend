@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import * as RechartsPrimitive from "recharts@2.15.2";
+import * as RechartsPrimitive from "recharts";
 
 import { cn } from "./utils";
 
@@ -208,7 +208,7 @@ function ChartTooltipContent({
                             "w-1": indicator === "line",
                             "w-0 border-[1.5px] border-dashed bg-transparent":
                               indicator === "dashed",
-                            "my-0.5": nestLabel && indicator === "dashed",
+                            "my-0": nestLabel && indicator === "dashed",
                           },
                         )}
                         style={

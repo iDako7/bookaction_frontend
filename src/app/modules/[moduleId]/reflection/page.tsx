@@ -6,10 +6,12 @@ import { Card } from '@/components/Card';
 import { Button } from '@/components/Button';
 import { MessageSquare, Lightbulb } from 'lucide-react';
 import { moduleReflections, modulesData } from '@/lib/mockData';
+import { useProgressStore } from '@/store/useProgressStore';
 
 export default function ModuleReflectionPage() {
   const params = useParams();
   const router = useRouter();
+  const { completeReflection } = useProgressStore();
   
   if (!params) return null;
 
@@ -22,6 +24,7 @@ export default function ModuleReflectionPage() {
   if (!reflection || !module) return <div>Reflection not found</div>;
 
   const handleComplete = () => {
+    completeReflection(moduleId);
     // Navigate to module completed
     router.push(`/modules/${moduleId}/completed`);
   };

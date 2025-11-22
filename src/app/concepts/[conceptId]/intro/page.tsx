@@ -7,10 +7,12 @@ import { Button } from '@/components/Button';
 import { StepIndicator } from '@/components/StepIndicator';
 import { conceptTutorials } from '@/lib/mockData';
 import { ImageWithFallback } from '@/components/figma/ImageWithFallback';
+import { useProgressStore } from '@/store/useProgressStore';
 
 export default function ConceptIntroPage() {
   const params = useParams();
   const router = useRouter();
+  const { completeConceptStage } = useProgressStore();
   
   if (!params) return null;
 
@@ -103,6 +105,7 @@ export default function ConceptIntroPage() {
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
+      completeConceptStage(conceptId, 'intro');
       router.push(`/concepts/${conceptId}/practice/intro`);
     }
   };

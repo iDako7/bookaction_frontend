@@ -16,7 +16,7 @@ export default function PracticeQuestionPage() {
 
   const conceptId = Number(params.conceptId);
   const quiz = conceptQuizzes[conceptId];
-  const { completeConcept } = useProgressStore();
+  const { completeConceptStage } = useProgressStore();
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState<number[]>([]);
@@ -58,7 +58,7 @@ export default function PracticeQuestionPage() {
   
   const handleNext = () => {
     if (isLastQuestion) {
-      completeConcept(conceptId);
+      completeConceptStage(conceptId, 'practice');
       router.push(`/concepts/${conceptId}/summary`);
     } else {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
