@@ -34,7 +34,15 @@ export function ModuleItem({ module }: ModuleItemProps) {
           </div>
           
           <div className="flex-1 space-y-2">
-            <h3 className="text-3xl font-bold text-slate-800 tracking-tight">{module.title}</h3>
+            <div className="flex items-center gap-3">
+              <h3 className="text-3xl font-bold text-slate-800 tracking-tight">{module.title}</h3>
+              {stats?.completedConcepts === stats?.totalConcepts && stats?.isReflectionViewed && (
+                <div className="flex items-center gap-1 rounded-full bg-green-100 px-3 py-1 text-xs font-bold text-green-700 shadow-sm border border-green-200">
+                  <CheckCircle className="h-3 w-3" />
+                  <span>Done!</span>
+                </div>
+              )}
+            </div>
             <div className="flex items-center gap-2 text-sm font-medium text-slate-500">
                <span>{module.concepts.length} lessons</span>
                <span>•</span>
@@ -67,10 +75,14 @@ export function ModuleItem({ module }: ModuleItemProps) {
               <div className="flex items-center gap-4">
                 <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl bg-white shadow-sm">
                   {isThemeCompleted ? (
-                    <CheckCircle className="h-8 w-8 text-green-500" />
+                    <div className="h-16 w-16 rounded-xl bg-green-500 flex items-center justify-center shadow-md">
+                       <CheckCircle className="h-8 w-8 text-white" />
+                    </div>
                   ) : (
-                    <div className="h-8 w-8 rounded-full bg-[#FEE685]/50 flex items-center justify-center">
-                      <BookOpen className="h-5 w-5 text-yellow-700" />
+                    <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl bg-white shadow-sm">
+                       <div className="h-8 w-8 rounded-full bg-gradient-to-r from-orange-400 to-orange-500 flex items-center justify-center shadow-md shadow-orange-500/20">
+                         <BookOpen className="h-4 w-4 text-white" />
+                       </div>
                     </div>
                   )}
                 </div>
@@ -86,9 +98,13 @@ export function ModuleItem({ module }: ModuleItemProps) {
                 </div>
               </div>
               
-              {!isThemeCompleted && (
+              {!isThemeCompleted ? (
                  <div className="mr-2 flex h-10 items-center gap-2 rounded-xl bg-gradient-to-r from-orange-400 to-orange-500 px-6 font-bold text-white shadow-md shadow-orange-500/20 transition-transform group-hover:translate-x-1">
                    Start
+                 </div>
+              ) : (
+                 <div className="mr-2 flex h-10 items-center gap-2 rounded-xl bg-white border-2 border-[#FEE685] px-6 font-bold text-yellow-600 shadow-sm transition-transform group-hover:translate-x-1">
+                   Review
                  </div>
               )}
             </Link>
@@ -113,11 +129,11 @@ export function ModuleItem({ module }: ModuleItemProps) {
                  <div className={cn(
                    "flex h-16 w-16 shrink-0 items-center justify-center rounded-xl shadow-sm",
                    stats?.isReflectionViewed 
-                    ? "bg-green-100" 
+                    ? "bg-green-500 shadow-md" 
                     : "bg-slate-200/50"
                  )}>
                    {stats?.isReflectionViewed ? (
-                      <CheckCircle className="h-8 w-8 text-green-600" />
+                      <CheckCircle className="h-8 w-8 text-white" />
                    ) : stats?.completedConcepts === stats?.totalConcepts ? (
                       <MessageCircle className="h-8 w-8 text-blue-400" />
                    ) : (
@@ -137,6 +153,12 @@ export function ModuleItem({ module }: ModuleItemProps) {
                    )}
                  </div>
                </div>
+
+               {stats?.isReflectionViewed && (
+                 <div className="mr-2 flex h-10 items-center gap-2 rounded-xl bg-blue-50 border border-blue-100 px-6 font-bold text-blue-600 shadow-sm transition-transform group-hover:translate-x-1">
+                   Review
+                 </div>
+               )}
              </Link>
           </div>
         </div>

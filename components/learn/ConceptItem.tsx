@@ -5,6 +5,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useCanAccessConceptIntro } from "@/lib/hooks/useGating";
 import { ConceptListItem } from "@/lib/types/api";
+import { useProgressStore } from "@/lib/state/progressStore";
 
 interface ConceptItemProps {
   moduleId: number;
@@ -19,6 +20,13 @@ export function ConceptItem({ moduleId, concept, index }: ConceptItemProps) {
     concept.id,
     orderIndex
   );
+  
+  const isConceptCompleted = useProgressStore((state) => 
+    state.isConceptSummaryViewed(moduleId, concept.id)
+  );
+
+  // Use local state if available, otherwise fall back to API data
+  const isCompleted = isConceptCompleted || concept.completed;
 
   const href = `/module/${moduleId}/concept/${concept.id}/intro`;
 
@@ -38,15 +46,15 @@ export function ConceptItem({ moduleId, concept, index }: ConceptItemProps) {
           <div
             className={cn(
               "flex h-16 w-16 shrink-0 items-center justify-center rounded-xl shadow-sm transition-colors",
-              concept.completed
-                ? "bg-green-100"
+              isCompleted
+                ? "bg-green-500 shadow-md"
                 : canAccess
                 ? "bg-slate-100 group-hover:bg-blue-50"
                 : "bg-slate-200/50"
             )}
           >
-            {concept.completed ? (
-              <CheckCircle className="h-8 w-8 text-green-600" />
+            {isCompleted ? (
+              <CheckCircle className="h-8 w-8 text-white" />
             ) : !canAccess ? (
               <Lock className="h-6 w-6 text-slate-400" />
             ) : (
@@ -66,7 +74,7 @@ export function ConceptItem({ moduleId, concept, index }: ConceptItemProps) {
             {!canAccess && (
                <p className="text-xs font-medium text-slate-400">🔒 Complete previous step first</p>
             )}
-            {canAccess && !concept.completed && (
+            {canAccess && !isCompleted && (
                <p className="text-xs font-medium text-slate-500 group-hover:text-blue-600">
                  Ready to start
                </p>
@@ -74,7 +82,11 @@ export function ConceptItem({ moduleId, concept, index }: ConceptItemProps) {
           </div>
         </div>
 
-        {canAccess && !concept.completed && (
+        {isCompleted ? (
+          <div className="mr-2 flex h-10 items-center gap-2 rounded-xl bg-blue-50 border border-blue-100 px-6 font-bold text-blue-600 shadow-sm transition-transform group-hover:translate-x-1">
+            Review
+          </div>
+        ) : canAccess && (
           <PlayCircle className="h-8 w-8 text-slate-300 group-hover:text-blue-500 transition-colors" />
         )}
       </Link>

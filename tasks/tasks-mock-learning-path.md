@@ -66,46 +66,46 @@
   - [x] 4.3 Wire CTA to theme page (mandatory before concept 1); respect gating on concept links.
   - [x] 4.4 Display skeleton/loading states while fetching overview data.
 
-- [ ] 5.0 Module theme page (verify: theme content matches mock data; gated start to concept 1)
+- [x] 5.0 Module theme page (verify: theme content matches mock data; gated start to concept 1)
 
-  - [ ] 5.1 Render theme title, context/story, image, and prompt question from mock data.
-  - [ ] 5.2 Add CTA to start Concept 1; mark theme as completed when viewed.
-  - [ ] 5.3 Provide back-to-learn navigation.
+  - [x] 5.1 Render theme title, context/story, image, and prompt question from mock data.
+  - [x] 5.2 Add CTA to start Concept 1; mark theme as completed when viewed.
+  - [x] 5.3 Provide back-to-learn navigation.
 
-- [ ] 6.0 Concept intro (3-step) flow (verify: stepper advances; completion recorded)
+- [x] 6.0 Concept intro (3-step) flow (verify: stepper advances; completion recorded)
 
-  - [ ] 6.1 Build stepper UI for definition/why, good example, bad example with media fallbacks.
-  - [ ] 6.2 Add next/back controls with progress indicator; enforce completion tracking when finishing step 3.
-  - [ ] 6.3 Handle revisit scenarios (retain completed state, allow navigation to practice).
+  - [x] 6.1 Build stepper UI for definition/why, good example, bad example with media fallbacks.
+  - [x] 6.2 Add next/back controls with progress indicator; enforce completion tracking when finishing step 3.
+  - [x] 6.3 Handle revisit scenarios (retain completed state, allow navigation to practice).
 
-- [ ] 7.0 Practice flow (verify: questions render, submit works, progress saved)
+- [x] 7.0 Practice flow (verify: questions render, submit works, progress saved)
 
-  - [ ] 7.1 Create practice intro screen with start button and lock check.
-  - [ ] 7.2 Render questions in `order_index` order; support single/multiple choice selection.
-  - [ ] 7.3 Disable submit until an answer is chosen; on submit, show correctness + explanation and allow retry.
-  - [ ] 7.4 Save user responses in mock state; advance to next question and mark practice complete when all questions submitted.
+  - [x] 7.1 Create practice intro screen with start button and lock check.
+  - [x] 7.2 Render questions in `order_index` order; support single/multiple choice selection.
+  - [x] 7.3 Disable submit until an answer is chosen; on submit, show correctness + explanation and allow retry.
+  - [x] 7.4 Save user responses in mock state; advance to next question and mark practice complete when all questions submitted.
 
-- [ ] 8.0 Summary & next concept teaser (verify: summary shows; next CTA respects locks)
+- [x] 8.0 Summary & next concept teaser (verify: summary shows; next CTA respects locks)
 
-  - [ ] 8.1 Display `summaryContent` for the concept; mark summary completion on view.
-  - [ ] 8.2 If `nextConceptIntro` exists, show teaser CTA to next concept intro respecting lock rules.
-  - [ ] 8.3 Support refresh persistence (stay on summary if reloaded).
+  - [x] 8.1 Display `summaryContent` for the concept; mark summary completion on view.
+  - [x] 8.2 If `nextConceptIntro` exists, show teaser CTA to next concept intro respecting lock rules.
+  - [x] 8.3 Support refresh persistence (stay on summary if reloaded).
 
-- [ ] 9.0 Reflection & module completion (verify: reflection gated until all summaries; completion screen reachable)
+- [x] 9.0 Reflection & module completion (verify: reflection gated until all summaries; completion screen reachable)
 
-  - [ ] 9.1 Unlock reflection only after all concept summaries completed; redirect otherwise.
-  - [ ] 9.2 Render reflection prompt/media with optional textarea; mock-submit and mark viewed.
-  - [ ] 9.3 Show module completion page with celebration + back-to-learn link; set module as completed.
+  - [x] 9.1 Unlock reflection only after all concept summaries completed; redirect otherwise.
+  - [x] 9.2 Render reflection prompt/media with optional textarea; mock-submit and mark viewed.
+  - [x] 9.3 Show module completion page with celebration + back-to-learn link; set module as completed.
 
-- [ ] 10.0 Medal page (verify: remains gated until both modules completed)
+- [x] 10.0 Medal page (verify: remains gated until both modules completed)
 
-  - [ ] 10.1 Gate medal access until all modules completed.
-  - [ ] 10.2 Display badge name, level, completion %, and streak (mock data).
+  - [x] 10.1 Gate medal access until all modules completed.
+  - [x] 10.2 Display badge name, level, completion %, and streak (mock data).
 
-- [ ] 11.0 Profile page (verify: shows mock essentials; navigation works)
+- [x] 11.0 Profile page (verify: shows mock essentials; navigation works)
 
-  - [ ] 11.1 Show avatar, name, streak, completed concepts count, and optional time spent (mock data).
-  - [ ] 11.2 Link back to learn; keep scope to essentials only.
+  - [x] 11.1 Show avatar, name, streak, completed concepts count, and optional time spent (mock data).
+  - [x] 11.2 Link back to learn; keep scope to essentials only.
 
 - [ ] 12.0 UI polish & components (verify: shared components match design tokens after receiving Figma MCP links)
 
