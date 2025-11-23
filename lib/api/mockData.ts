@@ -1,160 +1,80 @@
-import courseContent from "@/docs/course_content.json";
-import type {
+import {
   ModulesOverviewResponse,
   ModuleTheme,
   ConceptTutorial,
   ConceptQuizResponse,
-  QuizQuestion,
+  QuizSubmissionResponse,
   ConceptSummary,
   ModuleReflection,
-  QuizSubmissionResponse,
   ReflectionSubmissionResponse,
   ProgressResponse,
 } from "@/lib/types/api";
+import courseContent from "@/docs/course_content.json";
 
-// Type for the course content structure
-interface CourseModule {
-  module: {
-    title: string;
-    description: string;
-    order_index: number;
-  };
-  theme: {
-    title: string;
-    context: string;
-    media_url: string;
-    media_type: string;
-    question: string;
-  };
-  concepts: Array<{
-    order_index: number;
-    title: string;
-    definition: string;
-    why_it_works: string;
-    tutorial: {
-      order_index: number;
-      good_story: string;
-      good_media_url: string;
-      bad_story: string;
-      bad_media_url: string;
-    };
-    summary: {
-      order_index: number;
-      summary_content: string;
-      next_chapter_intro?: string;
-    };
-    quizzes: Array<{
-      order_index: number;
-      question: string;
-      question_type: string;
-      media_url: string;
-      options: string[];
-      explanation: string;
-      correct_option_index: number[];
-    }>;
-  }>;
-  reflection: {
-    module_summary: string;
-    module_summary_media_url: string;
-    learning_advice: string;
-  };
-}
+// Helper to simulate network delay
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const typedCourseContent = courseContent as CourseModule[];
-
-// Generate unique IDs for modules and concepts
-let moduleIdCounter = 1;
-let conceptIdCounter = 1;
-let quizIdCounter = 1;
-let reflectionIdCounter = 1;
-
-const moduleMap = new Map<number, CourseModule>();
-const conceptMap = new Map<number, { module: CourseModule; concept: any; moduleId: number }>();
-const quizMap = new Map<number, { quiz: any; conceptId: number }>();
-const reflectionMap = new Map<number, { reflection: any; moduleId: number }>();
-
-// Initialize mappings
-typedCourseContent.forEach((module) => {
-  const moduleId = moduleIdCounter++;
-  moduleMap.set(moduleId, module);
-  
-  const reflectionId = reflectionIdCounter++;
-  reflectionMap.set(reflectionId, { reflection: module.reflection, moduleId });
-
-  module.concepts.forEach((concept) => {
-    const conceptId = conceptIdCounter++;
-    conceptMap.set(conceptId, { module, concept, moduleId });
-
-    concept.quizzes.forEach((quiz) => {
-      const quizId = quizIdCounter++;
-      quizMap.set(quizId, { quiz, conceptId });
-    });
-  });
-});
-
-/**
- * Mock implementation of GET /api/modules/overview
- */
-export function getModulesOverview(): ModulesOverviewResponse {
-  const modules = Array.from(moduleMap.entries())
-    .sort(([, a], [, b]) => a.module.order_index - b.module.order_index)
-    .map(([id, module]) => {
-      const conceptsForModule = Array.from(conceptMap.entries())
-        .filter(([, data]) => data.moduleId === id)
-        .sort(([, a], [, b]) => a.concept.order_index - b.concept.order_index)
-        .map(([conceptId, data]) => ({
-          id: conceptId,
-          title: data.concept.title,
-          completed: false, // Will be updated by progress store
-        }));
-
-      return {
-        id,
-        title: module.module.title,
-        description: module.module.description,
-        theme: {
-          title: module.theme.title,
-          context: module.theme.context,
-          mediaUrl: module.theme.media_url,
-          mediaType: module.theme.media_type,
-          question: module.theme.question,
-        },
-        progress: 0, // Will be calculated by progress store
-        concepts: conceptsForModule,
-      };
-    });
-
-  return { modules };
-}
-
-/**
- * Mock implementation of GET /api/modules/:moduleId/theme
- */
-export function getModuleTheme(moduleId: number): ModuleTheme {
-  const courseModule = moduleMap.get(moduleId);
-  if (!courseModule) {
-    throw new Error(`Module ${moduleId} not found`);
-  }
-
+export const getModulesOverview = async (): Promise<ModulesOverviewResponse> => {
+  await delay(500);
+  // Map JSON to API shape
   return {
-    title: courseModule.theme.title,
-    context: courseModule.theme.context,
-    mediaUrl: courseModule.theme.media_url,
-    mediaType: courseModule.theme.media_type,
-    question: courseModule.theme.question,
+    modules: courseContent.map((m: any, index: number) => {
+      const moduleId = m.module.id || (index + 1);
+      return {
+        id: moduleId,
+        title: m.module.title,
+        description: m.module.description,
+        theme: {
+          title: m.theme.title,
+          context: m.theme.context,
+          mediaUrl: m.theme.media_url,
+          question: m.theme.question,
+        },
+        concepts: m.concepts.map((c: any, cIndex: number) => ({
+          id: c.id || (moduleId * 100 + cIndex + 1), // Ensure unique ID per concept
+          title: c.title,
+          completed: false, // Mock data default
+        })),
+      };
+    }),
   };
-}
+};
 
-/**
- * Mock implementation of GET /api/concepts/:conceptId/tutorial
- */
-export function getConceptTutorial(conceptId: number): ConceptTutorial {
-  const data = conceptMap.get(conceptId);
-  if (!data) {
-    throw new Error(`Concept ${conceptId} not found`);
-  }
+export const getModuleTheme = async (moduleId: number): Promise<ModuleTheme> => {
+  await delay(300);
+  // In the JSON, we don't have explicit IDs for modules, so we'll use order_index or find by index for now.
+  // Assuming the input JSON structure is an array of modules.
+  // We need to match the logic in getModulesOverview where we assign IDs.
+  // For mock data, let's assume the index + 1 is the ID if not present.
+  
+  const module = courseContent.find((m: any, index: number) => (m.module.id || index + 1) === moduleId);
+  
+  if (!module) throw new Error("Module not found");
+  
+  return {
+    title: module.theme.title,
+    context: module.theme.context,
+    mediaUrl: module.theme.media_url,
+    question: module.theme.question,
+  };
+};
 
-  const { concept } = data;
+export const getConceptTutorial = async (conceptId: number): Promise<ConceptTutorial> => {
+  await delay(300);
+  // Find concept across all modules
+  let concept: any;
+  
+  courseContent.forEach((m: any, mIndex: number) => {
+    const moduleId = m.module.id || (mIndex + 1);
+    const found = m.concepts.find((c: any, cIndex: number) => {
+      const currentId = c.id || (moduleId * 100 + cIndex + 1);
+      return currentId === conceptId;
+    });
+    if (found) concept = found;
+  });
+
+  if (!concept) throw new Error("Concept not found");
+
   return {
     title: concept.title,
     definition: concept.definition,
@@ -170,159 +90,106 @@ export function getConceptTutorial(conceptId: number): ConceptTutorial {
       },
     },
   };
-}
+};
 
-/**
- * Mock implementation of GET /api/concepts/:conceptId/quiz
- */
-export function getConceptQuiz(conceptId: number): ConceptQuizResponse {
-  const quizzes = Array.from(quizMap.entries())
-    .filter(([, data]) => data.conceptId === conceptId)
-    .map(([id, data]) => data.quiz)
-    .sort((a, b) => a.order_index - b.order_index);
+export const getConceptQuiz = async (conceptId: number): Promise<ConceptQuizResponse> => {
+  await delay(300);
+  let concept: any;
+  courseContent.forEach((m: any, mIndex: number) => {
+     const moduleId = m.module.id || (mIndex + 1);
+     m.concepts.forEach((c: any, cIndex: number) => {
+        const currentId = c.id || (moduleId * 100 + cIndex + 1);
+        if (currentId === conceptId) {
+            concept = c;
+        }
+    });
+  });
 
-  const questions: QuizQuestion[] = Array.from(quizMap.entries())
-    .filter(([, data]) => data.conceptId === conceptId)
-    .sort(([, a], [, b]) => a.quiz.order_index - b.quiz.order_index)
-    .map(([id, data]) => ({
-      id,
-      orderIndex: data.quiz.order_index,
-      question: data.quiz.question,
-      questionType: data.quiz.question_type as "single_choice" | "multiple_choice",
-      mediaUrl: data.quiz.media_url,
-      options: data.quiz.options,
-      correctOptionIndex: data.quiz.correct_option_index,
-      explanation: data.quiz.explanation,
-    }));
-
-  return { questions };
-}
-
-/**
- * Mock implementation of POST /api/quiz/:quizId/answer
- */
-export function submitQuizAnswer(
-  quizId: number,
-  userAnswerIndices: number[]
-): QuizSubmissionResponse {
-  const quizData = quizMap.get(quizId);
-  if (!quizData) {
-    throw new Error(`Quiz ${quizId} not found`);
-  }
-
-  const { quiz } = quizData;
-  const correctIndices = quiz.correct_option_index as number[];
-
-  // Calculate score
-  let score = 0;
-  if (quiz.question_type === "single_choice") {
-    score = userAnswerIndices[0] === correctIndices[0] ? 1 : 0;
-  } else {
-    // Multiple choice - partial credit
-    const correctSet = new Set(correctIndices);
-    const userSet = new Set(userAnswerIndices);
-    const intersection = [...correctSet].filter((x) => userSet.has(x));
-    score = intersection.length / correctIndices.length;
-  }
+  if (!concept) throw new Error("Concept not found");
 
   return {
-    userAnswerIndices,
-    correctOptionIndices: correctIndices,
-    score,
+    questions: concept.quizzes.map((q: any) => ({
+      orderIndex: q.order_index,
+      question: q.question,
+      questionType: q.question_type,
+      mediaUrl: q.media_url,
+      options: q.options,
+      correctOptionIndex: q.correct_option_index,
+      explanation: q.explanation,
+    })),
   };
-}
+};
 
-/**
- * Mock implementation of GET /api/concepts/:conceptId/summary
- */
-export function getConceptSummary(conceptId: number): ConceptSummary {
-  const data = conceptMap.get(conceptId);
-  if (!data) {
-    throw new Error(`Concept ${conceptId} not found`);
-  }
+export const submitQuizAnswer = async (
+  quizId: number,
+  userAnswerIndices: number[]
+): Promise<QuizSubmissionResponse> => {
+  await delay(500);
+  // In a real mock, we'd validate against the correct answer
+  // For now, return a dummy success response
+  return {
+    userAnswerIndices,
+    correctOptionIndices: [0], // Dummy correct
+    score: 100,
+  };
+};
 
-  const { concept } = data;
+export const getConceptSummary = async (conceptId: number): Promise<ConceptSummary> => {
+  await delay(300);
+  let concept: any;
+  courseContent.forEach((m: any, mIndex: number) => {
+     const moduleId = m.module.id || (mIndex + 1);
+     m.concepts.forEach((c: any, cIndex: number) => {
+        const currentId = c.id || (moduleId * 100 + cIndex + 1);
+        if (currentId === conceptId) {
+            concept = c;
+        }
+    });
+  });
+
+  if (!concept) throw new Error("Concept not found");
+
   return {
     summaryContent: concept.summary.summary_content,
     nextConceptIntro: concept.summary.next_chapter_intro,
   };
-}
+};
 
-/**
- * Mock implementation of GET /api/modules/:moduleId/reflection
- */
-export function getModuleReflection(moduleId: number): ModuleReflection {
-  const courseModule = moduleMap.get(moduleId);
-  if (!courseModule) {
-    throw new Error(`Module ${moduleId} not found`);
-  }
+export const getModuleReflection = async (moduleId: number): Promise<ModuleReflection> => {
+  await delay(300);
+  const module = courseContent.find((m: any, index: number) => (m.module.id || index + 1) === moduleId);
+  if (!module) throw new Error("Module not found");
 
   return {
     type: "text",
-    prompt: courseModule.reflection.module_summary,
-    mediaUrl: courseModule.reflection.module_summary_media_url,
+    prompt: module.reflection.module_summary, // Using module summary as prompt for now
+    mediaUrl: module.reflection.module_summary_media_url,
   };
-}
+};
 
-/**
- * Mock implementation of POST /api/modules/:moduleId/reflection
- */
-export function submitModuleReflection(
+export const submitModuleReflection = async (
   moduleId: number,
   answer: string,
-  userId: number = 1,
-  timeSpent?: number
-): ReflectionSubmissionResponse {
-  const reflectionEntry = Array.from(reflectionMap.entries()).find(
-    ([, data]) => data.moduleId === moduleId
-  );
-  
-  if (!reflectionEntry) {
-    throw new Error(`Reflection for module ${moduleId} not found`);
-  }
-
-  const [reflectionId] = reflectionEntry;
-
+  userId: number,
+  timeSpent: number
+): Promise<ReflectionSubmissionResponse> => {
+  await delay(500);
   return {
-    message: "Reflection saved successfully",
-    reflectionId,
-    userId,
-    answer,
-    timeSpent: timeSpent || 0,
+    success: true,
+    moduleId,
   };
-}
+};
 
-/**
- * Mock implementation of POST /api/concepts/:conceptId/progress
- */
-export function updateConceptProgress(
+export const updateConceptProgress = async (
   conceptId: number,
   isCompleted: boolean,
-  userId: number = 1,
-  timeSpent?: number
-): ProgressResponse {
+  userId: number,
+  timeSpent: number
+): Promise<ProgressResponse> => {
+  await delay(300);
   return {
-    id: conceptId,
-    concept_id: conceptId,
-    user_id: userId,
-    order_index: 0,
-    completed: isCompleted,
-    time_spent: timeSpent || 0,
-    completed_at: isCompleted ? new Date().toISOString() : null,
-    created_at: new Date().toISOString(),
+    success: true,
+    conceptId,
+    isCompleted,
   };
-}
-
-// Helper to get module ID from concept ID
-export function getModuleIdForConcept(conceptId: number): number | undefined {
-  return conceptMap.get(conceptId)?.moduleId;
-}
-
-// Helper to get all concept IDs for a module
-export function getConceptIdsForModule(moduleId: number): number[] {
-  return Array.from(conceptMap.entries())
-    .filter(([, data]) => data.moduleId === moduleId)
-    .map(([id]) => id);
-}
-
-
+};

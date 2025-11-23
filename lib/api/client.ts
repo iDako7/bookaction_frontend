@@ -120,7 +120,7 @@ export const api = {
         conceptId,
         update.isCompleted,
         update.userId,
-        update.timeSpent
+        update.timeSpent || 0 // Provide default for mock
       );
     }
     const response = await apiClient.post<ProgressResponse>(
@@ -147,5 +147,3 @@ export const api = {
 };
 
 export default api;
-
-

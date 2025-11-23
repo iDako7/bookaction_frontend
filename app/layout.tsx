@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} font-sans antialiased`}>
+      <body className={`${inter.variable} font-sans antialiased bg-[#F0F9FF]`}>
         <QueryProvider>
           <Header />
           <main className="min-h-[calc(100vh-4rem)]">{children}</main>

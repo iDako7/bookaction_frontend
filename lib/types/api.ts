@@ -1,9 +1,14 @@
-// Module types
+/**
+ * API Type Definitions
+ * Based on docs/api_design.md
+ */
+
+// --- Responses ---
+
 export interface ModuleTheme {
   title: string;
   context: string;
   mediaUrl: string;
-  mediaType: string;
   question: string;
 }
 
@@ -18,7 +23,7 @@ export interface ModuleOverviewItem {
   title: string;
   description?: string;
   theme: ModuleTheme;
-  progress: number;
+  progress?: number;
   concepts: ConceptListItem[];
 }
 
@@ -26,7 +31,6 @@ export interface ModulesOverviewResponse {
   modules: ModuleOverviewItem[];
 }
 
-// Concept Tutorial types
 export interface TutorialExample {
   story: string;
   mediaUrl: string;
@@ -42,27 +46,18 @@ export interface ConceptTutorial {
   };
 }
 
-// Quiz types
-export interface QuizQuestion {
-  id: number;
+export interface QuizOption {
   orderIndex: number;
   question: string;
   questionType: "single_choice" | "multiple_choice";
-  mediaUrl: string;
+  mediaUrl?: string;
   options: string[];
   correctOptionIndex: number[];
   explanation: string;
 }
 
 export interface ConceptQuizResponse {
-  questions: QuizQuestion[];
-}
-
-export interface QuizSubmission {
-  responseType: "single_choice" | "multiple_choice";
-  userId: number;
-  userAnswerIndices: number[];
-  timeSpent?: number;
+  questions: QuizOption[];
 }
 
 export interface QuizSubmissionResponse {
@@ -71,50 +66,58 @@ export interface QuizSubmissionResponse {
   score: number;
 }
 
-// Summary types
 export interface ConceptSummary {
   summaryContent: string;
   nextConceptIntro?: string;
 }
 
-// Reflection types
 export interface ModuleReflection {
-  type: string;
+  type: "text";
   prompt: string;
-  mediaUrl: string;
-}
-
-export interface ReflectionSubmission {
-  reflectionId: number;
-  userId: number;
-  answer: string;
-  timeSpent?: number;
+  mediaUrl?: string;
 }
 
 export interface ReflectionSubmissionResponse {
-  message: string;
-  reflectionId: number;
-  userId: number;
-  answer: string;
+  success?: boolean;
+  message?: string;
+  reflectionId?: number;
+  userId?: number;
+  answer?: string;
   timeSpent?: number;
+  moduleId?: number;
 }
 
-// Progress types
+export interface ProgressResponse {
+  success?: boolean;
+  id?: number;
+  conceptId?: number;
+  concept_id?: number;
+  user_id?: number;
+  completed?: boolean;
+  isCompleted?: boolean;
+  time_spent?: number;
+  completed_at?: string;
+  created_at?: string;
+}
+
+// --- Requests/Submissions ---
+
+export interface QuizSubmission {
+  responseType: "single_choice" | "multiple_choice";
+  userId: number;
+  userAnswerIndices: number[];
+  timeSpent: number;
+}
+
+export interface ReflectionSubmission {
+  reflectionId?: number;
+  userId: number;
+  answer: string;
+  timeSpent: number;
+}
+
 export interface ProgressUpdate {
   userId: number;
   isCompleted: boolean;
   timeSpent?: number;
 }
-
-export interface ProgressResponse {
-  id: number;
-  concept_id: number;
-  user_id: number;
-  order_index: number;
-  completed: boolean;
-  time_spent: number;
-  completed_at: string | null;
-  created_at: string;
-}
-
-
