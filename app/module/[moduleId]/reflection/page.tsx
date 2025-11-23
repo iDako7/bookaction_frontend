@@ -93,6 +93,18 @@ export default function ReflectionPage({ params }: PageProps) {
             </div>
           </div>
 
+          {/* Reflection Image */}
+          {reflection?.mediaUrl && (
+            <div className="rounded-2xl overflow-hidden shadow-md aspect-video relative bg-slate-100 mx-auto w-full max-w-2xl">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img 
+                src={reflection.mediaUrl} 
+                alt="Reflection Context"
+                className="w-full h-full object-cover"
+              />
+            </div>
+          )}
+
           {/* Reflection Question */}
           <div className="bg-gradient-to-r from-indigo-50 to-blue-50 p-6 md:p-8 rounded-2xl border-2 border-indigo-100 flex gap-5 items-start">
             <div className="w-12 h-12 bg-gradient-to-b from-indigo-300 to-indigo-200 rounded-xl flex items-center justify-center text-2xl shrink-0 shadow-sm">

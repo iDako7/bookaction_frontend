@@ -106,16 +106,3 @@
 
   - [x] 11.1 Show avatar, name, streak, completed concepts count, and optional time spent (mock data).
   - [x] 11.2 Link back to learn; keep scope to essentials only.
-
-- [ ] 12.0 UI polish & components (verify: shared components match design tokens after receiving Figma MCP links)
-
-  - [ ] 12.1 Implement shared components (buttons, cards, step indicators, progress bars, status chips, lock badges) using design tokens.
-  - [ ] 12.2 Apply typography, spacing, and color palette per design system; ensure responsive grid behavior.
-  - [ ] 12.3 Add media fallbacks (e.g., `/media/panda.png`) and accessibility labels.
-
-- [ ] 13.0 QA & manual verification (verify: full gated flow passes with mock data; medal/profile reachable)
-
-  - [ ] 13.1 Walk the full flow: Learn → Theme → Concept intro → Practice → Summary → Reflection → Module complete for both modules.
-  - [ ] 13.2 Verify gating edge cases (refresh on summary, skip summary returns, reopen theme after completion, repeat concepts allowed).
-  - [ ] 13.3 Confirm medal unlock after both modules; profile reachable; progress persists after reload.
-  - [ ] 13.4 Spot-check API toggle still uses mock provider; no network calls required.

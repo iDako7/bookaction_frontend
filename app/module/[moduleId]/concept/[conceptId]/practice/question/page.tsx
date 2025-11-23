@@ -149,6 +149,18 @@ export default function PracticeQuestionPage({ params }: PageProps) {
         <Card className="bg-white border-blue-100 shadow-sm overflow-hidden rounded-2xl">
           <div className="p-6 md:p-8 space-y-8">
             
+            {/* Question Image */}
+            {currentQuestion.mediaUrl && (
+              <div className="rounded-2xl overflow-hidden shadow-md aspect-video relative bg-slate-100">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img 
+                  src={currentQuestion.mediaUrl} 
+                  alt="Question Context"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            )}
+
             {/* Question Text */}
             <div>
               <h1 className="text-xl md:text-2xl font-bold text-slate-900 leading-relaxed">
