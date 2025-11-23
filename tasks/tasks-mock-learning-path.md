@@ -59,12 +59,12 @@
   - [x] 3.2 Implement helpers to compute lock/unlock status using `order_index` and completion state.
   - [x] 3.3 Add navigation guards/redirections to keep users in correct sequence; allow repeats of completed steps.
 
-- [ ] 4.0 Learn page (verify: list shows modules with lock/completion; request Figma MCP links before layout matching)
+- [x] 4.0 Learn page (verify: list shows modules with lock/completion; request Figma MCP links before layout matching)
 
-  - [ ] 4.1 Build module list layout with progress indicators and media fallback.
-  - [ ] 4.2 Implement expandable module rows showing concepts with lock/completed states.
-  - [ ] 4.3 Wire CTA to theme page (mandatory before concept 1); respect gating on concept links.
-  - [ ] 4.4 Display skeleton/loading states while fetching overview data.
+  - [x] 4.1 Build module list layout with progress indicators and media fallback.
+  - [x] 4.2 Implement expandable module rows showing concepts with lock/completed states.
+  - [x] 4.3 Wire CTA to theme page (mandatory before concept 1); respect gating on concept links.
+  - [x] 4.4 Display skeleton/loading states while fetching overview data.
 
 - [ ] 5.0 Module theme page (verify: theme content matches mock data; gated start to concept 1)
 
@@ -114,6 +114,7 @@
   - [ ] 12.3 Add media fallbacks (e.g., `/media/panda.png`) and accessibility labels.
 
 - [ ] 13.0 QA & manual verification (verify: full gated flow passes with mock data; medal/profile reachable)
+
   - [ ] 13.1 Walk the full flow: Learn → Theme → Concept intro → Practice → Summary → Reflection → Module complete for both modules.
   - [ ] 13.2 Verify gating edge cases (refresh on summary, skip summary returns, reopen theme after completion, repeat concepts allowed).
   - [ ] 13.3 Confirm medal unlock after both modules; profile reachable; progress persists after reload.

@@ -1,37 +1,40 @@
-# Template prompt for implementing the mock learning path tasks
+# AI Execution Prompt: Mock Learning Path Implementation
 
-Use this prompt to guide an AI working on `tasks/tasks-mock-learning-path.md`. Replace bracketed placeholders (`{{...}}`) before sending.
+Use this to guide AI on `tasks/tasks-mock-learning-path.md`. Replace `{{...}}`.
 
 ---
 
-You are an implementation agent. Follow the task list in `tasks/tasks-mock-learning-path.md` step by step, keeping every sub-task tiny and independently verifiable in the UI.
+Act as an implementation agent for `tasks/tasks-mock-learning-path.md`. Focus on small, verifiable steps on the current branch.
 
-## Context
-- Scope: mock-data-only MVP. Use the mock provider mapped from `docs/course_content.json`; leave API integration behind the existing toggle.
-- Flow: gated sequence theme → concept intro/practice/summary → reflection; medal unlocks only after all modules are completed; profile/medal pages stay essential-only.
-- Design: follow Figma specs when integrating pages. Request Figma MCP links from the user at the start of task 4.x (page integration); each page has its own link.
-- Constraints: do **not** create new branches; work on the current branch. Follow `docs/rules/task_generate_rule.md` and any `AGENTS.md` instructions.
+## Core Rules
 
-## Goals
-1. Complete tasks in order from `tasks/tasks-mock-learning-path.md`, marking each checkbox when done.
-2. Keep diffs focused on the current sub-task; avoid unrelated changes.
-3. Ensure every parent task can be manually verified in the UI before moving on.
+- **Scope:** Mock-data MVP using `docs/course_content.json`. API integration remains toggled off.
+- **Flow:** Theme → Intro → Practice → Summary → Reflection → Medal.
+- **Files:** `tasks/tasks-mock-learning-path.md` (track progress), `docs/api_design.md`.
 
-## Files & references
-- Task list: `tasks/tasks-mock-learning-path.md`
-- Content: `docs/course_content.json`, `docs/api_design.md`
-- App routes/components: see "Relevant Files" section in the task list.
+## Execution Protocol
 
-## Working style
-- Before task 4.x: proceed without Figma assets. At the start of 4.x, ask the user for per-page Figma MCP links.
-- Use mock data and gating logic to keep the flow theme → concept intro → practice → summary → reflection.
-- Persist progress with the Zustand store; React Query is the source of truth for content.
-- Keep commits small and per-task when possible; run applicable tests. If no tests are run, state that explicitly.
+1. **Task X.0 (Setup/Analysis):**
+
+   - Focus strictly on understanding requirements, verifying file structure, and planning.
+   - Do NOT write implementation code yet. Verify dependencies and mock data availability.
+
+2. **Figma Integration (Task 4.x+):**
+
+   - Access Figma MCP. **CRITICAL:** Check if the Figma page name matches the current task.
+   - If names mismatch (e.g., "Login" design for "Dashboard" task), **PAUSE** and ask the user for the correct link/node. Do not guess.
+
+3. **Development:**
+   - Implement sub-tasks sequentially.
+   - Persist state via Zustand; content via React Query.
+   - Verify manually after every parent task.
 
 ## Reporting
-Provide a concise summary after each sub-task:
-- What changed (files touched, key behavior)
-- Verification steps/results (UI checks, tests run)
-- Any follow-ups or dependencies (e.g., awaiting Figma links)
 
-Ready to start with task `{{next-task-id}}`: `{{task-title}}`.
+Summarize after each sub-task:
+
+- Changes made (files & behavior).
+- Verification results (UI checks).
+- Blocking issues (e.g., incorrect Figma link).
+
+Ready for task `{{next-task-id}}`: `{{task-title}}`.
