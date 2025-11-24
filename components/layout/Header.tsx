@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { BookOpen, User } from "lucide-react";
+import { BookOpen, User, MessageCircle } from "lucide-react"; // 👈 添加 MessageCircle
 
 export function Header() {
   const pathname = usePathname();
@@ -40,6 +40,21 @@ export function Header() {
             <BookOpen className="h-4 w-4" />
             Learn
           </Link>
+          
+          {/* 👇 新增 Chat 链接 */}
+          <Link
+            href="/chat"
+            className={cn(
+              "flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition-all",
+              pathname === "/chat"
+                ? "bg-gradient-to-b from-blue-400 to-sky-400 text-white shadow-md shadow-blue-500/20"
+                : "text-slate-500 hover:text-slate-900"
+            )}
+          >
+            <MessageCircle className="h-4 w-4" />
+            Chat
+          </Link>
+          
           <Link
             href="/profile"
             className={cn(
