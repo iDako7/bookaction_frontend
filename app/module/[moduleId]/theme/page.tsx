@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
+import { ImageWithFallback } from "@/components/ui/image-with-fallback";
 
 interface PageProps {
   params: Promise<{
@@ -21,8 +22,10 @@ export default function ModuleThemePage({ params }: PageProps) {
   const { moduleId } = use(params);
   const numericModuleId = parseInt(moduleId, 10);
 
-  const { data: theme, isLoading: isThemeLoading } = useModuleTheme(numericModuleId);
-  const { data: modulesOverview, isLoading: isOverviewLoading } = useModulesOverview();
+  const { data: theme, isLoading: isThemeLoading } =
+    useModuleTheme(numericModuleId);
+  const { data: modulesOverview, isLoading: isOverviewLoading } =
+    useModulesOverview();
   const markThemeViewed = useProgressStore((state) => state.markThemeViewed);
 
   useEffect(() => {
@@ -45,7 +48,9 @@ export default function ModuleThemePage({ params }: PageProps) {
     return <div className="p-6 text-center">Module not found</div>;
   }
 
-  const currentModule = modulesOverview.modules.find((m) => m.id === numericModuleId);
+  const currentModule = modulesOverview.modules.find(
+    (m) => m.id === numericModuleId
+  );
   const firstConceptId = currentModule?.concepts[0]?.id;
 
   // Fallback media if theme.mediaUrl is empty or missing
@@ -66,13 +71,13 @@ export default function ModuleThemePage({ params }: PageProps) {
           <div className="p-8 md:p-10 space-y-8">
             {/* Header Section */}
             <div className="space-y-6 text-center relative">
-              <Badge 
-                variant="secondary" 
+              <Badge
+                variant="secondary"
                 className="bg-amber-100 text-amber-700 hover:bg-amber-100 border-none px-4 py-1.5 text-sm font-semibold rounded-full"
               >
                 🎯 Module Story
               </Badge>
-              
+
               <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">
                 {theme.title}
               </h1>
@@ -80,11 +85,8 @@ export default function ModuleThemePage({ params }: PageProps) {
 
             {/* Hero Image */}
             <div className="rounded-2xl overflow-hidden shadow-md aspect-video relative bg-slate-100">
-              {/* Using a simple img tag as per design context, but Next.js Image is better for production. 
-                  For MVP/Mock with local assets, img is fine or Next Image if configured. */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img 
-                src={mediaUrl} 
+              <ImageWithFallback
+                src={mediaUrl}
                 alt={theme.title}
                 className="w-full h-full object-cover"
               />
@@ -117,10 +119,11 @@ export default function ModuleThemePage({ params }: PageProps) {
             {/* CTA Button */}
             {firstConceptId ? (
               <div className="pt-4">
-                <Link href={`/module/${numericModuleId}/concept/${firstConceptId}/intro`} className="block w-full">
-                  <Button 
-                    className="w-full bg-gradient-to-b from-blue-400 to-sky-400 hover:from-blue-500 hover:to-sky-500 text-white text-lg font-semibold h-14 rounded-xl shadow-lg shadow-blue-200 transition-all hover:shadow-xl hover:-translate-y-0.5"
-                  >
+                <Link
+                  href={`/module/${numericModuleId}/concept/${firstConceptId}/intro`}
+                  className="block w-full"
+                >
+                  <Button className="w-full bg-gradient-to-b from-blue-400 to-sky-400 hover:from-blue-500 hover:to-sky-500 text-white text-lg font-semibold h-14 rounded-xl shadow-lg shadow-blue-200 transition-all hover:shadow-xl hover:-translate-y-0.5">
                     Start First Concept
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
@@ -137,11 +140,3 @@ export default function ModuleThemePage({ params }: PageProps) {
     </div>
   );
 }
-
-
-
-
-
-
-
-

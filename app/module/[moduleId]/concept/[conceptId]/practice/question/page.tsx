@@ -17,6 +17,7 @@ import {
   Square,
   CheckSquare,
 } from "lucide-react";
+import { ImageWithFallback } from "@/components/ui/image-with-fallback";
 
 interface PageProps {
   params: Promise<{
@@ -188,8 +189,7 @@ export default function PracticeQuestionPage({ params }: PageProps) {
             {/* Question Image */}
             {currentQuestion.mediaUrl && (
               <div className="rounded-2xl overflow-hidden shadow-md aspect-video relative bg-slate-100">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <ImageWithFallback
                   src={currentQuestion.mediaUrl}
                   alt="Question Context"
                   className="w-full h-full object-cover"

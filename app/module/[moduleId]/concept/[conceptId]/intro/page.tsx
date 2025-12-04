@@ -1,9 +1,12 @@
 "use client";
 
-import { use, useState, useEffect } from "react";
+import { use, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useConceptTutorial, useUpdateConceptProgress } from "@/lib/hooks/useApi";
+import {
+  useConceptTutorial,
+  useUpdateConceptProgress,
+} from "@/lib/hooks/useApi";
 import { useProgressStore } from "@/lib/state/progressStore";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -11,6 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/lib/state/authStore";
+import { ImageWithFallback } from "@/components/ui/image-with-fallback";
 
 interface PageProps {
   params: Promise<{
@@ -23,9 +27,7 @@ interface PageProps {
 const DefinitionStep = ({ data }: { data: any }) => (
   <div className="space-y-8">
     <div className="relative pt-4 pb-2">
-      <Badge 
-        className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-indigo-100 text-indigo-700 hover:bg-indigo-100 border-none px-4 py-1.5 text-sm font-semibold rounded-full"
-      >
+      <Badge className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-indigo-100 text-indigo-700 hover:bg-indigo-100 border-none px-4 py-1.5 text-sm font-semibold rounded-full">
         📚 Definition
       </Badge>
       <h2 className="text-2xl font-bold text-center text-slate-900 mt-4">
@@ -57,13 +59,13 @@ const DefinitionStep = ({ data }: { data: any }) => (
   </div>
 );
 
-const ExampleStep = ({ 
-  title, 
-  badgeText, 
-  badgeColorClass, 
-  story, 
-  mediaUrl 
-}: { 
+const ExampleStep = ({
+  title,
+  badgeText,
+  badgeColorClass,
+  story,
+  mediaUrl,
+}: {
   title: string;
   badgeText: string;
   badgeColorClass: string;
@@ -72,7 +74,7 @@ const ExampleStep = ({
 }) => (
   <div className="space-y-8">
     <div className="relative pt-4 pb-2">
-      <Badge 
+      <Badge
         className={cn(
           "absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 border-none px-4 py-1.5 text-sm font-semibold rounded-full",
           badgeColorClass
@@ -83,20 +85,21 @@ const ExampleStep = ({
     </div>
 
     <div className="rounded-2xl overflow-hidden shadow-md aspect-video relative bg-slate-100 mt-4">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img 
-        src={mediaUrl || "/media/panda.png"} 
+      <ImageWithFallback
+        src={mediaUrl || "/media/panda.png"}
         alt={title}
         className="w-full h-full object-cover"
       />
     </div>
 
-    <div className={cn(
-      "rounded-2xl p-8 border-2",
-      badgeText.includes("Good") 
-        ? "bg-gradient-to-r from-green-50 to-emerald-50 border-green-200" 
-        : "bg-gradient-to-r from-red-50 to-rose-50 border-red-200"
-    )}>
+    <div
+      className={cn(
+        "rounded-2xl p-8 border-2",
+        badgeText.includes("Good")
+          ? "bg-gradient-to-r from-green-50 to-emerald-50 border-green-200"
+          : "bg-gradient-to-r from-red-50 to-rose-50 border-red-200"
+      )}
+    >
       <div className="prose prose-slate max-w-none">
         <p className="text-lg text-slate-800 whitespace-pre-line leading-relaxed">
           {story}
@@ -117,7 +120,9 @@ export default function ConceptIntroPage({ params }: PageProps) {
 
   const { data: tutorial, isLoading } = useConceptTutorial(numericConceptId);
   const updateProgress = useUpdateConceptProgress(numericConceptId);
-  const markIntroCompleted = useProgressStore((state) => state.markConceptIntroCompleted);
+  const markIntroCompleted = useProgressStore(
+    (state) => state.markConceptIntroCompleted
+  );
   const userId = useAuthStore((state) => state.user?.id ?? 1);
 
   // Handle completion when finishing step 3
@@ -179,10 +184,14 @@ export default function ConceptIntroPage({ params }: PageProps) {
 
   const getStepTitle = () => {
     switch (step) {
-      case 1: return "What is it?";
-      case 2: return "Good Example";
-      case 3: return "Bad Example";
-      default: return "";
+      case 1:
+        return "What is it?";
+      case 2:
+        return "Good Example";
+      case 3:
+        return "Bad Example";
+      default:
+        return "";
     }
   };
 
@@ -208,9 +217,7 @@ export default function ConceptIntroPage({ params }: PageProps) {
         </div>
 
         <Card className="bg-white border-blue-100 shadow-sm overflow-hidden rounded-2xl min-h-[600px] flex flex-col">
-          <div className="p-6 md:p-8 flex-1">
-            {getStepContent()}
-          </div>
+          <div className="p-6 md:p-8 flex-1">{getStepContent()}</div>
 
           {/* Footer Navigation */}
           <div className="p-6 md:p-8 border-t border-slate-100 bg-slate-50/50 flex gap-4">
@@ -251,10 +258,3 @@ export default function ConceptIntroPage({ params }: PageProps) {
     </div>
   );
 }
-
-
-
-
-
-
-
