@@ -15,17 +15,22 @@ import type {
   LoginRequest,
   RegisterRequest,
   AuthResponse,
+  ApiResponse,
+  AuthPayload,
   User,
 } from "@/lib/types/api";
 
-const defaultApiBase = "http://localhost:3000/api";
-
 const resolveApiBaseUrl = () => {
-  if (process.env.NEXT_PUBLIC_API_URL) {
-    return process.env.NEXT_PUBLIC_API_URL;
+  const envBaseUrl = process.env.NEXT_PUBLIC_API_URL;
+  if (envBaseUrl) {
+    return envBaseUrl;
   }
 
-  return typeof window === "undefined" ? defaultApiBase : "/api";
+  if (typeof window !== "undefined") {
+    return "/api";
+  }
+
+  throw new Error("NEXT_PUBLIC_API_URL is not configured");
 };
 
 // Axios instance for API calls
@@ -155,7 +160,7 @@ export const api = {
 
   // Auth
   login: async (data: LoginRequest): Promise<AuthResponse> => {
-    const response = await apiClient.post<any>("/auth/login", {
+    const response = await apiClient.post<ApiResponse<AuthPayload>>("/auth/login", {
       emailOrUsername: data.emailOrUsername,
       password: data.password,
     });
@@ -166,7 +171,10 @@ export const api = {
   },
 
   register: async (data: RegisterRequest): Promise<AuthResponse> => {
-    const response = await apiClient.post<any>("/auth/register", data);
+    const response = await apiClient.post<ApiResponse<AuthPayload>>(
+      "/auth/register",
+      data
+    );
     return {
       user: response.data.data.user,
       token: response.data.data.accessToken,

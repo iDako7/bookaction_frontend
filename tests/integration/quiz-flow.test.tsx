@@ -15,7 +15,12 @@ vi.mock("next/navigation", () => ({
 }));
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api";
+  process.env.NEXT_PUBLIC_API_URL ||
+  (() => {
+    throw new Error(
+      'Set NEXT_PUBLIC_API_URL (e.g., "http://localhost:3000/api") before running integration tests.'
+    );
+  })();
 
 const TEST_USER = {
   email: "testuser_new@example.com",

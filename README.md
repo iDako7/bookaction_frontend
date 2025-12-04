@@ -47,7 +47,7 @@ Follow the prompts to log in and link your project.
 
 When deploying, ensure you set the following environment variables in the Vercel Project Settings or when prompted by the CLI:
 
-- `NEXT_PUBLIC_API_URL`: (Optional) URL of your backend API. Defaults to `http://localhost:3000/api`.
+- `NEXT_PUBLIC_API_URL`: URL of your backend API. Copy `.env.example` to `.env.local` and set this value for local development.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
@@ -69,7 +69,7 @@ This runs Vitest in watch mode by default. To run tests once (e.g., for CI):
 npm test -- run
 ```
 
-Integration tests call the live backend (default `http://localhost:3000/api`). Start the backend with `npm run dev` in `BookAction_BackEnd` and ensure the `testuser_new@example.com` account from `BookAction_BackEnd/api.automated.rest` exists so the quiz flow test can authenticate.
+Integration tests call the live backend. Set `NEXT_PUBLIC_API_URL` (see `.env.example`) and start the backend with `npm run dev` in `BookAction_BackEnd`. Ensure the `testuser_new@example.com` account from `BookAction_BackEnd/api.automated.rest` exists so the quiz flow test can authenticate.
 
 ### Mock Data in Tests
 

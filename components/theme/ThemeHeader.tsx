@@ -2,6 +2,7 @@
 
 import { ModuleTheme } from "@/lib/types/api";
 import { Skeleton } from "@/components/ui/skeleton";
+import { FallbackImage } from "@/components/ui/fallback-image";
 
 interface ThemeHeaderProps {
   title: string;
@@ -28,15 +29,13 @@ export function ThemeHeader({ title, theme, isLoading }: ThemeHeaderProps) {
         <h1 className="text-3xl font-bold tracking-tight">{theme.title}</h1>
       </div>
 
-      {/* Media Placeholder - In real app, use theme.mediaUrl */}
       <div className="aspect-video w-full bg-muted rounded-xl flex items-center justify-center overflow-hidden relative">
         {theme.mediaUrl ? (
-           // eslint-disable-next-line @next/next/no-img-element
-           <img 
-             src={theme.mediaUrl} 
-             alt={theme.title}
-             className="w-full h-full object-cover"
-           />
+          <FallbackImage
+            src={theme.mediaUrl}
+            alt={theme.title}
+            className="w-full h-full object-cover"
+          />
         ) : (
           <span className="text-muted-foreground">Theme Image</span>
         )}

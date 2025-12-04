@@ -136,6 +136,17 @@ export interface AuthResponse {
   token: string;
 }
 
+export interface AuthPayload {
+  user: User;
+  accessToken: string;
+}
+
+export interface ApiResponse<T> {
+  success: boolean;
+  message?: string;
+  data: T;
+}
+
 export interface LoginRequest {
   emailOrUsername: string;
   password: string;

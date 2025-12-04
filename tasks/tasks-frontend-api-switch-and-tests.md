@@ -44,7 +44,7 @@
         *   **Quiz**: Backend returns calculated `score`; Mock returns fixed `100`.
     *   **Env Strategy**:
         *   `NEXT_PUBLIC_USE_MOCK_DATA="true"` enables mock mode.
-        *   Default (undefined/missing) is **Real API** (`http://localhost:3000/api`).
+        *   Backend base URL comes from `NEXT_PUBLIC_API_URL` (set in `.env.local`; see `.env.example`); no hardcoded default.
     *   **Mock Inventory**:
         *   `lib/api/mockData.ts`: Central mock store.
         *   `lib/api/client.ts`: Toggles implementation based on env var.
