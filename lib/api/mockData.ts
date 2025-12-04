@@ -8,49 +8,58 @@ import {
   ModuleReflection,
   ReflectionSubmissionResponse,
   ProgressResponse,
+  LoginRequest,
+  RegisterRequest,
+  AuthResponse,
+  User,
 } from "@/lib/types/api";
 import courseContent from "@/docs/course_content.json";
 
 // Helper to simulate network delay
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-export const getModulesOverview = async (): Promise<ModulesOverviewResponse> => {
-  await delay(500);
-  // Map JSON to API shape
-  return {
-    modules: courseContent.map((m: any, index: number) => {
-      const moduleId = m.module.id || (index + 1);
-      return {
-        id: moduleId,
-        title: m.module.title,
-        description: m.module.description,
-        theme: {
-          title: m.theme.title,
-          context: m.theme.context,
-          mediaUrl: m.theme.media_url,
-          question: m.theme.question,
-        },
-        concepts: m.concepts.map((c: any, cIndex: number) => ({
-          id: c.id || (moduleId * 100 + cIndex + 1), // Ensure unique ID per concept
-          title: c.title,
-          completed: false, // Mock data default
-        })),
-      };
-    }),
+export const getModulesOverview =
+  async (): Promise<ModulesOverviewResponse> => {
+    await delay(500);
+    // Map JSON to API shape
+    return {
+      modules: courseContent.map((m: any, index: number) => {
+        const moduleId = m.module.id || index + 1;
+        return {
+          id: moduleId,
+          title: m.module.title,
+          description: m.module.description,
+          theme: {
+            title: m.theme.title,
+            context: m.theme.context,
+            mediaUrl: m.theme.media_url,
+            question: m.theme.question,
+          },
+          concepts: m.concepts.map((c: any, cIndex: number) => ({
+            id: c.id || moduleId * 100 + cIndex + 1, // Ensure unique ID per concept
+            title: c.title,
+            completed: false, // Mock data default
+          })),
+        };
+      }),
+    };
   };
-};
 
-export const getModuleTheme = async (moduleId: number): Promise<ModuleTheme> => {
+export const getModuleTheme = async (
+  moduleId: number
+): Promise<ModuleTheme> => {
   await delay(300);
   // In the JSON, we don't have explicit IDs for modules, so we'll use order_index or find by index for now.
   // Assuming the input JSON structure is an array of modules.
   // We need to match the logic in getModulesOverview where we assign IDs.
   // For mock data, let's assume the index + 1 is the ID if not present.
-  
-  const module = courseContent.find((m: any, index: number) => (m.module.id || index + 1) === moduleId);
-  
+
+  const module = courseContent.find(
+    (m: any, index: number) => (m.module.id || index + 1) === moduleId
+  );
+
   if (!module) throw new Error("Module not found");
-  
+
   return {
     title: module.theme.title,
     context: module.theme.context,
@@ -59,15 +68,17 @@ export const getModuleTheme = async (moduleId: number): Promise<ModuleTheme> => 
   };
 };
 
-export const getConceptTutorial = async (conceptId: number): Promise<ConceptTutorial> => {
+export const getConceptTutorial = async (
+  conceptId: number
+): Promise<ConceptTutorial> => {
   await delay(300);
   // Find concept across all modules
   let concept: any;
-  
+
   courseContent.forEach((m: any, mIndex: number) => {
-    const moduleId = m.module.id || (mIndex + 1);
+    const moduleId = m.module.id || mIndex + 1;
     const found = m.concepts.find((c: any, cIndex: number) => {
-      const currentId = c.id || (moduleId * 100 + cIndex + 1);
+      const currentId = c.id || moduleId * 100 + cIndex + 1;
       return currentId === conceptId;
     });
     if (found) concept = found;
@@ -92,16 +103,18 @@ export const getConceptTutorial = async (conceptId: number): Promise<ConceptTuto
   };
 };
 
-export const getConceptQuiz = async (conceptId: number): Promise<ConceptQuizResponse> => {
+export const getConceptQuiz = async (
+  conceptId: number
+): Promise<ConceptQuizResponse> => {
   await delay(300);
   let concept: any;
   courseContent.forEach((m: any, mIndex: number) => {
-     const moduleId = m.module.id || (mIndex + 1);
-     m.concepts.forEach((c: any, cIndex: number) => {
-        const currentId = c.id || (moduleId * 100 + cIndex + 1);
-        if (currentId === conceptId) {
-            concept = c;
-        }
+    const moduleId = m.module.id || mIndex + 1;
+    m.concepts.forEach((c: any, cIndex: number) => {
+      const currentId = c.id || moduleId * 100 + cIndex + 1;
+      if (currentId === conceptId) {
+        concept = c;
+      }
     });
   });
 
@@ -134,16 +147,18 @@ export const submitQuizAnswer = async (
   };
 };
 
-export const getConceptSummary = async (conceptId: number): Promise<ConceptSummary> => {
+export const getConceptSummary = async (
+  conceptId: number
+): Promise<ConceptSummary> => {
   await delay(300);
   let concept: any;
   courseContent.forEach((m: any, mIndex: number) => {
-     const moduleId = m.module.id || (mIndex + 1);
-     m.concepts.forEach((c: any, cIndex: number) => {
-        const currentId = c.id || (moduleId * 100 + cIndex + 1);
-        if (currentId === conceptId) {
-            concept = c;
-        }
+    const moduleId = m.module.id || mIndex + 1;
+    m.concepts.forEach((c: any, cIndex: number) => {
+      const currentId = c.id || moduleId * 100 + cIndex + 1;
+      if (currentId === conceptId) {
+        concept = c;
+      }
     });
   });
 
@@ -155,9 +170,13 @@ export const getConceptSummary = async (conceptId: number): Promise<ConceptSumma
   };
 };
 
-export const getModuleReflection = async (moduleId: number): Promise<ModuleReflection> => {
+export const getModuleReflection = async (
+  moduleId: number
+): Promise<ModuleReflection> => {
   await delay(300);
-  const module = courseContent.find((m: any, index: number) => (m.module.id || index + 1) === moduleId);
+  const module = courseContent.find(
+    (m: any, index: number) => (m.module.id || index + 1) === moduleId
+  );
   if (!module) throw new Error("Module not found");
 
   return {
@@ -191,5 +210,50 @@ export const updateConceptProgress = async (
     success: true,
     conceptId,
     isCompleted,
+  };
+};
+
+// --- Auth Mocks ---
+
+export const login = async (data: LoginRequest): Promise<AuthResponse> => {
+  await delay(500);
+  // Simulate simple check
+  if (data.email === "error@example.com") {
+    throw new Error("Invalid credentials");
+  }
+  return {
+    user: {
+      id: 1,
+      email: data.email,
+      name: "Mock User",
+    },
+    token: "mock-jwt-token",
+  };
+};
+
+export const register = async (
+  data: RegisterRequest
+): Promise<AuthResponse> => {
+  await delay(800);
+  return {
+    user: {
+      id: 1,
+      email: data.email,
+      name: data.name,
+    },
+    token: "mock-jwt-token-registered",
+  };
+};
+
+export const logout = async (): Promise<void> => {
+  await delay(200);
+};
+
+export const getMe = async (): Promise<User> => {
+  await delay(300);
+  return {
+    id: 1,
+    email: "user@example.com",
+    name: "Mock User",
   };
 };

@@ -7,6 +7,9 @@ import { BookOpen, User } from "lucide-react";
 
 export function Header() {
   const pathname = usePathname();
+  const isAuthPage = pathname === "/login" || pathname === "/register";
+
+  if (isAuthPage) return null;
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-blue-100 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
@@ -17,7 +20,10 @@ export function Header() {
             <BookOpen className="h-6 w-6 text-white" />
           </div>
           <div className="flex flex-col">
-            <Link href="/learn" className="text-xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-sky-400">
+            <Link
+              href="/learn"
+              className="text-xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-sky-400"
+            >
               BookAction
             </Link>
             <span className="text-xs font-medium text-slate-500">

@@ -12,6 +12,10 @@ import type {
   ReflectionSubmissionResponse,
   ProgressUpdate,
   ProgressResponse,
+  LoginRequest,
+  RegisterRequest,
+  AuthResponse,
+  User,
 } from "@/lib/types/api";
 import * as mockData from "./mockData";
 
@@ -142,6 +146,38 @@ export const api = {
       `/quiz/${quizId}/answer`,
       submission
     );
+    return response.data;
+  },
+
+  // Auth
+  login: async (data: LoginRequest): Promise<AuthResponse> => {
+    if (USE_MOCK_DATA) {
+      return mockData.login(data);
+    }
+    const response = await apiClient.post<AuthResponse>("/auth/login", data);
+    return response.data;
+  },
+
+  register: async (data: RegisterRequest): Promise<AuthResponse> => {
+    if (USE_MOCK_DATA) {
+      return mockData.register(data);
+    }
+    const response = await apiClient.post<AuthResponse>("/auth/register", data);
+    return response.data;
+  },
+
+  logout: async (): Promise<void> => {
+    if (USE_MOCK_DATA) {
+      return mockData.logout();
+    }
+    await apiClient.post("/auth/logout");
+  },
+
+  getMe: async (): Promise<User> => {
+    if (USE_MOCK_DATA) {
+      return mockData.getMe();
+    }
+    const response = await apiClient.get<User>("/auth/me");
     return response.data;
   },
 };
