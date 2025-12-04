@@ -1,9 +1,10 @@
 import type { NextConfig } from "next";
 
-const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
-
 const nextConfig: NextConfig = {
   async rewrites() {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
+    console.log("API Base URL:", apiBaseUrl);
+
     if (!apiBaseUrl) {
       console.warn("NEXT_PUBLIC_API_URL not set; skipping /api rewrite.");
       return [];

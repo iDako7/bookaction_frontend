@@ -23,7 +23,9 @@ export function FallbackImage({
     setCurrentSrc(src ?? fallbackSrc);
   }, [src, fallbackSrc]);
 
-  const handleError = (event: React.SyntheticEvent<HTMLImageElement, Event>) => {
+  const handleError = (
+    event: React.SyntheticEvent<HTMLImageElement, Event>
+  ) => {
     if (currentSrc !== fallbackSrc) {
       setCurrentSrc(fallbackSrc);
     }
