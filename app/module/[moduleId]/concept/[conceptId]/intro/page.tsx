@@ -16,6 +16,8 @@ import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/lib/state/authStore";
 import { ImageWithFallback } from "@/components/ui/image-with-fallback";
 
+import type { ConceptTutorial } from "@/lib/types/api";
+
 interface PageProps {
   params: Promise<{
     moduleId: string;
@@ -24,7 +26,7 @@ interface PageProps {
 }
 
 // Step components to handle different content layouts
-const DefinitionStep = ({ data }: { data: any }) => (
+const DefinitionStep = ({ data }: { data: ConceptTutorial }) => (
   <div className="space-y-8">
     <div className="relative pt-4 pb-2">
       <Badge className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-indigo-100 text-indigo-700 hover:bg-indigo-100 border-none px-4 py-1.5 text-sm font-semibold rounded-full">
