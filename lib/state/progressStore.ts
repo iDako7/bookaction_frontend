@@ -237,9 +237,9 @@ export const useProgressStore = create<ProgressState>()(
         get().modules[moduleId]?.completed || false,
 
       getConceptCompletionPercentage: (moduleId, totalConcepts) => {
-        const module = get().modules[moduleId];
-        if (!module || totalConcepts === 0) return 0;
-        const completedCount = Object.values(module.concepts).filter(
+        const mod = get().modules[moduleId];
+        if (!mod || totalConcepts === 0) return 0;
+        const completedCount = Object.values(mod.concepts).filter(
           (c) => c.summaryViewed
         ).length;
         return Math.round((completedCount / totalConcepts) * 100);

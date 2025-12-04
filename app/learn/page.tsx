@@ -26,7 +26,7 @@ export default function LearnPage() {
 
         {/* Subtitle */}
         <p className="text-lg text-slate-600 max-w-2xl font-medium">
-          Master essential communication skills through interactive lessons. Let's get started! 💪
+          Master essential communication skills through interactive lessons. Let&apos;s get started! 💪
         </p>
       </div>
 

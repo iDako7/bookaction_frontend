@@ -13,9 +13,9 @@ export function useModuleStats(moduleId: number) {
   const isReflectionViewed = progressStore.isReflectionViewed(moduleId);
   const isCompleted = progressStore.isModuleCompleted(moduleId);
   
-  // Calculate completion based on summaryViewed
+  // Calculate completion based on API status OR local summaryViewed
   const completedConcepts = moduleData?.concepts.filter((c) => 
-    progressStore.isConceptSummaryViewed(moduleId, c.id)
+    c.completed || progressStore.isConceptSummaryViewed(moduleId, c.id)
   ).length || 0;
 
   const percentage = totalConcepts > 0 
@@ -59,7 +59,7 @@ export function useCanAccessConceptIntro(moduleId: number, conceptId: number, or
     }
 
     const prevConcept = moduleData.concepts[prevConceptIndex];
-    return progressStore.isConceptSummaryViewed(moduleId, prevConcept.id);
+    return prevConcept.completed || progressStore.isConceptSummaryViewed(moduleId, prevConcept.id);
 
   }, [data, moduleId, orderIndex, progressStore]);
 

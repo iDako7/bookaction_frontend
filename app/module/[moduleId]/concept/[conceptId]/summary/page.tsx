@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CheckCircle } from "lucide-react";
+import { useAuthStore } from "@/lib/state/authStore";
 
 interface PageProps {
   params: Promise<{
@@ -26,17 +27,18 @@ export default function ConceptSummaryPage({ params }: PageProps) {
   const { data: modulesData } = useModulesOverview();
   const updateProgress = useUpdateConceptProgress(numericConceptId);
   const markSummaryViewed = useProgressStore((state) => state.markConceptSummaryViewed);
+  const userId = useAuthStore((state) => state.user?.id ?? 1);
 
   // Calculate next step
   let nextHref = "/learn"; // default fallback
   if (modulesData?.modules) {
-    const module = modulesData.modules.find(m => m.id === numericModuleId);
-    if (module) {
-      const conceptIndex = module.concepts.findIndex(c => c.id === numericConceptId);
+    const currentModule = modulesData.modules.find(m => m.id === numericModuleId);
+    if (currentModule) {
+      const conceptIndex = currentModule.concepts.findIndex(c => c.id === numericConceptId);
       if (conceptIndex !== -1) {
-        if (conceptIndex < module.concepts.length - 1) {
+        if (conceptIndex < currentModule.concepts.length - 1) {
           // Has next concept
-          const nextConcept = module.concepts[conceptIndex + 1];
+          const nextConcept = currentModule.concepts[conceptIndex + 1];
           nextHref = `/module/${numericModuleId}/concept/${nextConcept.id}/intro`;
         } else {
           // Last concept, go to reflection
@@ -52,11 +54,11 @@ export default function ConceptSummaryPage({ params }: PageProps) {
       markSummaryViewed(numericModuleId, numericConceptId);
       // Update backend progress to complete
       updateProgress.mutate({
-        userId: 1,
+        userId,
         isCompleted: true,
       });
     }
-  }, [summary, numericModuleId, numericConceptId, markSummaryViewed, updateProgress.mutate]);
+  }, [summary, numericModuleId, numericConceptId, markSummaryViewed, updateProgress.mutate, userId]);
 
   if (isSummaryLoading || isTutorialLoading) {
     return (

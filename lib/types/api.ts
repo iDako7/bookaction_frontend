@@ -47,6 +47,7 @@ export interface ConceptTutorial {
 }
 
 export interface QuizOption {
+  id: number;
   orderIndex: number;
   question: string;
   questionType: "single_choice" | "multiple_choice";
@@ -127,7 +128,7 @@ export interface ProgressUpdate {
 export interface User {
   id: number;
   email: string;
-  name: string;
+  username: string;
 }
 
 export interface AuthResponse {
@@ -136,12 +137,12 @@ export interface AuthResponse {
 }
 
 export interface LoginRequest {
-  email: string;
-  password?: string;
+  emailOrUsername: string;
+  password: string;
 }
 
 export interface RegisterRequest {
   email: string;
-  password?: string;
-  name: string;
+  password: string;
+  username: string;
 }

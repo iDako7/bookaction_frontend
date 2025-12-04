@@ -50,7 +50,10 @@ export function LoginForm() {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await api.login(values);
+      const response = await api.login({
+        emailOrUsername: values.email,
+        password: values.password,
+      });
       login(response.user, response.token);
       router.push("/learn");
     } catch (err) {

@@ -4,8 +4,7 @@ import Link from "next/link";
 import { BookOpen, CheckCircle, MessageCircle, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ModuleOverviewItem } from "@/lib/types/api";
-import { Progress } from "@/components/ui/progress";
-import { Button } from "@/components/ui/button";
+
 import { ConceptList } from "./ConceptList";
 import { useModuleStats } from "@/lib/hooks/useGating";
 
@@ -19,7 +18,7 @@ export function ModuleItem({ module }: ModuleItemProps) {
   // Theme is always the first step
   const themeHref = `/module/${module.id}/theme`;
   const isThemeCompleted = stats?.isThemeViewed;
-  const isThemeUnlocked = true; // Theme is always unlocked
+
 
   return (
     <div className="relative overflow-hidden rounded-3xl border border-blue-50 bg-white shadow-[0px_10px_30px_-5px_rgba(0,0,0,0.05)] transition-all hover:shadow-[0px_20px_40px_-5px_rgba(0,0,0,0.05)]">

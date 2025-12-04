@@ -10,6 +10,7 @@ import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/lib/state/authStore";
 
 interface PageProps {
   params: Promise<{
@@ -117,12 +118,13 @@ export default function ConceptIntroPage({ params }: PageProps) {
   const { data: tutorial, isLoading } = useConceptTutorial(numericConceptId);
   const updateProgress = useUpdateConceptProgress(numericConceptId);
   const markIntroCompleted = useProgressStore((state) => state.markConceptIntroCompleted);
+  const userId = useAuthStore((state) => state.user?.id ?? 1);
 
   // Handle completion when finishing step 3
   const handleComplete = () => {
     markIntroCompleted(numericModuleId, numericConceptId);
     updateProgress.mutate({
-      userId: 1, // Mock user ID
+      userId,
       isCompleted: false, // Concept isn't fully done, just intro
     });
     router.push(`/module/${moduleId}/concept/${conceptId}/practice/intro`);
@@ -249,7 +251,6 @@ export default function ConceptIntroPage({ params }: PageProps) {
     </div>
   );
 }
-
 
 
 

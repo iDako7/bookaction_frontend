@@ -9,6 +9,7 @@ import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { useAuthStore } from "@/lib/state/authStore";
 
 interface PageProps {
   params: Promise<{
@@ -26,6 +27,7 @@ export default function ReflectionPage({ params }: PageProps) {
   const submitReflection = useSubmitModuleReflection(numericModuleId);
   const markReflectionViewed = useProgressStore((state) => state.markReflectionViewed);
   const markModuleCompleted = useProgressStore((state) => state.markModuleCompleted);
+  const userId = useAuthStore((state) => state.user?.id ?? 1);
 
   const [answer, setAnswer] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -44,7 +46,7 @@ export default function ReflectionPage({ params }: PageProps) {
     // 2. Submit to backend
     try {
       await submitReflection.mutateAsync({
-        userId: 1, // Mock
+        userId,
         answer,
         timeSpent: 60, // Mock time
       });
@@ -170,4 +172,3 @@ export default function ReflectionPage({ params }: PageProps) {
     </div>
   );
 }
-

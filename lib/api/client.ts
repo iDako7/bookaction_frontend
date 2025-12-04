@@ -17,28 +17,66 @@ import type {
   AuthResponse,
   User,
 } from "@/lib/types/api";
-import * as mockData from "./mockData";
 
-// Environment flag to toggle between mock and API
-const USE_MOCK_DATA = process.env.NEXT_PUBLIC_USE_MOCK_DATA !== "false";
+const defaultApiBase = "http://localhost:3000/api";
+
+const resolveApiBaseUrl = () => {
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL;
+  }
+
+  return typeof window === "undefined" ? defaultApiBase : "/api";
+};
 
 // Axios instance for API calls
 const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api",
+  baseURL: resolveApiBaseUrl(),
   headers: {
     "Content-Type": "application/json",
   },
 });
 
+// Add a request interceptor to attach the token
+apiClient.interceptors.request.use(
+  (config) => {
+    // Keep baseURL in sync with env for SSR, browser, and tests
+    config.baseURL = resolveApiBaseUrl();
+
+    // Only access localStorage on the client side
+    if (typeof window !== "undefined") {
+      const storage = localStorage.getItem("bookaction-auth");
+      if (storage) {
+        try {
+          const parsed = JSON.parse(storage);
+          const token = parsed.state?.token;
+          if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+          }
+        } catch (e) {
+          console.error("Failed to parse auth token", e);
+        }
+      }
+    }
+    return config;
+  },
+  (error) => {
+    if (error.response?.status === 401) {
+      // Clear storage and redirect to login if unauthorized
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("bookaction-auth");
+        window.location.href = "/login";
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 /**
- * API Client with automatic mock/real toggle
+ * API Client
  */
 export const api = {
   // Modules
   getModulesOverview: async (): Promise<ModulesOverviewResponse> => {
-    if (USE_MOCK_DATA) {
-      return mockData.getModulesOverview();
-    }
     const response = await apiClient.get<ModulesOverviewResponse>(
       "/modules/overview"
     );
@@ -46,9 +84,6 @@ export const api = {
   },
 
   getModuleTheme: async (moduleId: number): Promise<ModuleTheme> => {
-    if (USE_MOCK_DATA) {
-      return mockData.getModuleTheme(moduleId);
-    }
     const response = await apiClient.get<ModuleTheme>(
       `/modules/${moduleId}/theme`
     );
@@ -56,9 +91,6 @@ export const api = {
   },
 
   getModuleReflection: async (moduleId: number): Promise<ModuleReflection> => {
-    if (USE_MOCK_DATA) {
-      return mockData.getModuleReflection(moduleId);
-    }
     const response = await apiClient.get<ModuleReflection>(
       `/modules/${moduleId}/reflection`
     );
@@ -69,14 +101,6 @@ export const api = {
     moduleId: number,
     submission: ReflectionSubmission
   ): Promise<ReflectionSubmissionResponse> => {
-    if (USE_MOCK_DATA) {
-      return mockData.submitModuleReflection(
-        moduleId,
-        submission.answer,
-        submission.userId,
-        submission.timeSpent
-      );
-    }
     const response = await apiClient.post<ReflectionSubmissionResponse>(
       `/modules/${moduleId}/reflection`,
       submission
@@ -86,9 +110,6 @@ export const api = {
 
   // Concepts
   getConceptTutorial: async (conceptId: number): Promise<ConceptTutorial> => {
-    if (USE_MOCK_DATA) {
-      return mockData.getConceptTutorial(conceptId);
-    }
     const response = await apiClient.get<ConceptTutorial>(
       `/concepts/${conceptId}/tutorial`
     );
@@ -96,9 +117,6 @@ export const api = {
   },
 
   getConceptQuiz: async (conceptId: number): Promise<ConceptQuizResponse> => {
-    if (USE_MOCK_DATA) {
-      return mockData.getConceptQuiz(conceptId);
-    }
     const response = await apiClient.get<ConceptQuizResponse>(
       `/concepts/${conceptId}/quiz`
     );
@@ -106,9 +124,6 @@ export const api = {
   },
 
   getConceptSummary: async (conceptId: number): Promise<ConceptSummary> => {
-    if (USE_MOCK_DATA) {
-      return mockData.getConceptSummary(conceptId);
-    }
     const response = await apiClient.get<ConceptSummary>(
       `/concepts/${conceptId}/summary`
     );
@@ -119,14 +134,6 @@ export const api = {
     conceptId: number,
     update: ProgressUpdate
   ): Promise<ProgressResponse> => {
-    if (USE_MOCK_DATA) {
-      return mockData.updateConceptProgress(
-        conceptId,
-        update.isCompleted,
-        update.userId,
-        update.timeSpent || 0 // Provide default for mock
-      );
-    }
     const response = await apiClient.post<ProgressResponse>(
       `/concepts/${conceptId}/progress`,
       update
@@ -139,11 +146,8 @@ export const api = {
     quizId: number,
     submission: QuizSubmission
   ): Promise<QuizSubmissionResponse> => {
-    if (USE_MOCK_DATA) {
-      return mockData.submitQuizAnswer(quizId, submission.userAnswerIndices);
-    }
     const response = await apiClient.post<QuizSubmissionResponse>(
-      `/quiz/${quizId}/answer`,
+      `/concepts/quiz/${quizId}/answer`,
       submission
     );
     return response.data;
@@ -151,32 +155,29 @@ export const api = {
 
   // Auth
   login: async (data: LoginRequest): Promise<AuthResponse> => {
-    if (USE_MOCK_DATA) {
-      return mockData.login(data);
-    }
-    const response = await apiClient.post<AuthResponse>("/auth/login", data);
-    return response.data;
+    const response = await apiClient.post<any>("/auth/login", {
+      emailOrUsername: data.emailOrUsername,
+      password: data.password,
+    });
+    return {
+      user: response.data.data.user,
+      token: response.data.data.accessToken,
+    };
   },
 
   register: async (data: RegisterRequest): Promise<AuthResponse> => {
-    if (USE_MOCK_DATA) {
-      return mockData.register(data);
-    }
-    const response = await apiClient.post<AuthResponse>("/auth/register", data);
-    return response.data;
+    const response = await apiClient.post<any>("/auth/register", data);
+    return {
+      user: response.data.data.user,
+      token: response.data.data.accessToken,
+    };
   },
 
   logout: async (): Promise<void> => {
-    if (USE_MOCK_DATA) {
-      return mockData.logout();
-    }
     await apiClient.post("/auth/logout");
   },
 
   getMe: async (): Promise<User> => {
-    if (USE_MOCK_DATA) {
-      return mockData.getMe();
-    }
     const response = await apiClient.get<User>("/auth/me");
     return response.data;
   },

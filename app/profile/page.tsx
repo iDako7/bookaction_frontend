@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+
 import { useRouter } from "next/navigation";
 import { useModulesOverview } from "@/lib/hooks/useApi";
 import { useProgressStore } from "@/lib/state/progressStore";
@@ -28,9 +28,7 @@ export default function ProfilePage() {
   const { user, logout } = useAuthStore();
 
   // Access store directly to get current progress state
-  const getConceptCompletionPercentage = useProgressStore(
-    (state) => state.getConceptCompletionPercentage
-  );
+
   const getModuleProgress = useProgressStore(
     (state) => state.getModuleProgress
   );
@@ -140,7 +138,7 @@ export default function ProfilePage() {
             <User className="w-12 h-12" />
           </div>
           <h1 className="text-3xl font-extrabold text-slate-900">
-            {user?.name || "Your Profile"}
+            {user?.username || "Your Profile"}
           </h1>
           <p className="text-slate-600 text-lg mt-2">
             {user?.email || "Keep building your relationship skills!"}

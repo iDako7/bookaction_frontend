@@ -47,7 +47,32 @@ Follow the prompts to log in and link your project.
 
 When deploying, ensure you set the following environment variables in the Vercel Project Settings or when prompted by the CLI:
 
-- `NEXT_PUBLIC_USE_MOCK_DATA`: Set to `true` (to use built-in mock data) or `false` (to use a real backend).
-- `NEXT_PUBLIC_API_URL`: (Optional) URL of your backend API if not using mock data.
+- `NEXT_PUBLIC_API_URL`: (Optional) URL of your backend API. Defaults to `http://localhost:3000/api`.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Testing
+
+This project uses [Vitest](https://vitest.dev/) and [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/) for unit and integration testing.
+
+### Running Tests
+
+To run the full test suite:
+
+```bash
+npm test
+```
+
+This runs Vitest in watch mode by default. To run tests once (e.g., for CI):
+
+```bash
+npm test -- run
+```
+
+Integration tests call the live backend (default `http://localhost:3000/api`). Start the backend with `npm run dev` in `BookAction_BackEnd` and ensure the `testuser_new@example.com` account from `BookAction_BackEnd/api.automated.rest` exists so the quiz flow test can authenticate.
+
+### Mock Data in Tests
+
+Tests are configured to mock API hooks using `vi.mock`. The testing environment (`jsdom`) and setup files (`vitest.setup.ts`, `lib/test-utils.tsx`) handle the necessary configuration.
+
+When writing new tests, use the `renderWithProviders` utility from `@/lib/test-utils` to wrap components with the necessary providers (QueryClient, Suspense).

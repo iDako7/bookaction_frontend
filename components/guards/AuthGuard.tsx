@@ -14,25 +14,38 @@ const PUBLIC_PATHS = ["/login", "/register", "/"];
 export default function AuthGuard({ children }: AuthGuardProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const { isAuthenticated } = useAuthStore();
+  const auth = useAuthStore();
+  const [hydrated, setHydrated] = useState(false);
+
+  // Ensure we only use the store values after hydration to match server
+  const isAuthenticated = hydrated ? auth.isAuthenticated : false;
+  const token = hydrated ? auth.token : null;
+
   const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
     // Check if current path is public
     const isPublicPath = PUBLIC_PATHS.includes(pathname);
 
-    if (!isAuthenticated && !isPublicPath) {
+    if ((!isAuthenticated || !token) && !isPublicPath) {
       router.push("/login");
     } else if (
       isAuthenticated &&
+      token &&
       (pathname === "/login" || pathname === "/register")
     ) {
       // Redirect to learn if already logged in and trying to access auth pages
       router.push("/learn");
     }
+  }, [isAuthenticated, token, pathname, router]);
 
-    setIsChecking(false);
-  }, [isAuthenticated, pathname, router]);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setHydrated(true);
+      setIsChecking(false);
+    }, 0);
+    return () => clearTimeout(timer);
+  }, []);
 
   if (isChecking) {
     return (
