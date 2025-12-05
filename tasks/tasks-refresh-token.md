@@ -10,31 +10,31 @@
 
 ## Tasks
 
-- [ ] 1.0 Implement Refresh Token Interceptor Logic
+- [x] 1.0 Implement Refresh Token Interceptor Logic
 
-  - [ ] 1.1 Add `isRefreshing` flag and `failedQueue` array to `lib/api/client.ts` to manage concurrent requests during refresh.
-  - [ ] 1.2 Create a `processQueue` helper function to retry or reject failed requests after refresh attempts.
-  - [ ] 1.3 Modify the existing response interceptor in `lib/api/client.ts` to catch `401 Unauthorized` errors.
-  - [ ] 1.4 Implement the refresh logic:
-    - [ ] Check if `!originalRequest._retry`.
-    - [ ] If `isRefreshing` is true, add the request to `failedQueue`.
-    - [ ] If `isRefreshing` is false, set it to true and call `POST /auth/refresh`.
-  - [ ] 1.5 Handle successful refresh:
-    - [ ] Extract new `accessToken` from response.
-    - [ ] Update the global Auth Store with the new token (using `useAuthStore.getState().login` or similar).
-    - [ ] Update the `Authorization` header of the original request.
-    - [ ] Process the `failedQueue` with the new token.
-    - [ ] Return the result of the retried original request.
-  - [ ] 1.6 Handle failed refresh:
-    - [ ] Process `failedQueue` with error.
-    - [ ] Clear auth state (logout).
-    - [ ] Redirect to login page.
-    - [ ] Ensure `isRefreshing` is reset to false.
+  - [x] 1.1 Add `isRefreshing` flag and `failedQueue` array to `lib/api/client.ts` to manage concurrent requests during refresh.
+  - [x] 1.2 Create a `processQueue` helper function to retry or reject failed requests after refresh attempts.
+  - [x] 1.3 Modify the existing response interceptor in `lib/api/client.ts` to catch `401 Unauthorized` errors.
+  - [x] 1.4 Implement the refresh logic:
+    - [x] Check if `!originalRequest._retry`.
+    - [x] If `isRefreshing` is true, add the request to `failedQueue`.
+    - [x] If `isRefreshing` is false, set it to true and call `POST /auth/refresh`.
+  - [x] 1.5 Handle successful refresh:
+    - [x] Extract new `accessToken` from response.
+    - [x] Update the global Auth Store with the new token (using `useAuthStore.getState().login` or similar).
+    - [x] Update the `Authorization` header of the original request.
+    - [x] Process the `failedQueue` with the new token.
+    - [x] Return the result of the retried original request.
+  - [x] 1.6 Handle failed refresh:
+    - [x] Process `failedQueue` with error.
+    - [x] Clear auth state (logout).
+    - [x] Redirect to login page.
+    - [x] Ensure `isRefreshing` is reset to false.
 
-- [ ] 2.0 Update Auth Store/State Management
+- [x] 2.0 Update Auth Store/State Management
 
-  - [ ] 2.1 Verify `lib/state/authStore.ts` exposes necessary actions (like `login` or a specific `setToken`) that can be called from `client.ts`.
-  - [ ] 2.2 Ensure the store correctly persists the new token to `localStorage` so subsequent page reloads remain authenticated.
+  - [x] 2.1 Verify `lib/state/authStore.ts` exposes necessary actions (like `login` or a specific `setToken`) that can be called from `client.ts`.
+  - [x] 2.2 Ensure the store correctly persists the new token to `localStorage` so subsequent page reloads remain authenticated.
 
 - [ ] 3.0 Verify Refresh Token Flow
   - [ ] 3.1 Start the development server.

@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 import type {
   ModulesOverviewResponse,
   ModuleTheme,
@@ -19,6 +19,7 @@ import type {
   AuthPayload,
   User,
 } from "@/lib/types/api";
+import { useAuthStore } from "@/lib/state/authStore";
 
 const resolveApiBaseUrl = () => {
   const envBaseUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -31,6 +32,25 @@ const resolveApiBaseUrl = () => {
   }
 
   throw new Error("NEXT_PUBLIC_API_URL is not configured");
+};
+
+// Queue to store requests while refreshing token
+let isRefreshing = false;
+let failedQueue: Array<{
+  resolve: (token: string) => void;
+  reject: (error: unknown) => void;
+}> = [];
+
+const processQueue = (error: unknown, token: string | null = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token!);
+    }
+  });
+
+  failedQueue = [];
 };
 
 // Axios instance for API calls
@@ -49,29 +69,88 @@ apiClient.interceptors.request.use(
 
     // Only access localStorage on the client side
     if (typeof window !== "undefined") {
-      const storage = localStorage.getItem("bookaction-auth");
-      if (storage) {
-        try {
-          const parsed = JSON.parse(storage);
-          const token = parsed.state?.token;
-          if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-          }
-        } catch (e) {
-          console.error("Failed to parse auth token", e);
-        }
+      const token = useAuthStore.getState().token;
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
       }
     }
     return config;
   },
   (error) => {
-    if (error.response?.status === 401) {
-      // Clear storage and redirect to login if unauthorized
-      if (typeof window !== "undefined") {
-        localStorage.removeItem("bookaction-auth");
-        window.location.href = "/login";
+    return Promise.reject(error);
+  }
+);
+
+// Add a response interceptor to handle token refresh
+apiClient.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  async (error) => {
+    const originalRequest = error.config as AxiosRequestConfig & {
+      _retry?: boolean;
+    };
+
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      if (isRefreshing) {
+        return new Promise<string>(function (resolve, reject) {
+          failedQueue.push({ resolve, reject });
+        })
+          .then((token) => {
+            if (originalRequest.headers) {
+              originalRequest.headers["Authorization"] = "Bearer " + token;
+            }
+            return apiClient(originalRequest);
+          })
+          .catch((err) => {
+            return Promise.reject(err);
+          });
+      }
+
+      originalRequest._retry = true;
+      isRefreshing = true;
+
+      try {
+        // Call refresh endpoint
+        const response = await axios.post(
+          `${resolveApiBaseUrl()}/auth/refresh`,
+          {},
+          { withCredentials: true }
+        );
+
+        const { newAccessToken } = response.data.data;
+
+        // Update store
+        const { user } = useAuthStore.getState();
+        if (user) {
+          useAuthStore.getState().login(user, newAccessToken);
+        }
+
+        // Update header for future requests
+        apiClient.defaults.headers.common["Authorization"] =
+          "Bearer " + newAccessToken;
+
+        // Update header for this request
+        if (originalRequest.headers) {
+          originalRequest.headers["Authorization"] = "Bearer " + newAccessToken;
+        }
+
+        processQueue(null, newAccessToken);
+        return apiClient(originalRequest);
+      } catch (err) {
+        processQueue(err, null);
+
+        // Logout and redirect
+        useAuthStore.getState().logout();
+        if (typeof window !== "undefined") {
+          window.location.href = "/login";
+        }
+        return Promise.reject(err);
+      } finally {
+        isRefreshing = false;
       }
     }
+
     return Promise.reject(error);
   }
 );
@@ -160,10 +239,13 @@ export const api = {
 
   // Auth
   login: async (data: LoginRequest): Promise<AuthResponse> => {
-    const response = await apiClient.post<ApiResponse<AuthPayload>>("/auth/login", {
-      emailOrUsername: data.emailOrUsername,
-      password: data.password,
-    });
+    const response = await apiClient.post<ApiResponse<AuthPayload>>(
+      "/auth/login",
+      {
+        emailOrUsername: data.emailOrUsername,
+        password: data.password,
+      }
+    );
     return {
       user: response.data.data.user,
       token: response.data.data.accessToken,
