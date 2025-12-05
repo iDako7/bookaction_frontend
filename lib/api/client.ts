@@ -20,6 +20,7 @@ import type {
   User,
 } from "@/lib/types/api";
 import { useAuthStore } from "@/lib/state/authStore";
+import { useProgressStore } from "@/lib/state/progressStore";
 
 const resolveApiBaseUrl = () => {
   const envBaseUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -142,6 +143,7 @@ apiClient.interceptors.response.use(
 
         // Logout and redirect
         useAuthStore.getState().logout();
+        useProgressStore.getState().reset();
         if (typeof window !== "undefined") {
           window.location.href = "/login";
         }

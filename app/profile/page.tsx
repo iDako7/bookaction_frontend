@@ -1,6 +1,5 @@
 "use client";
 
-
 import { useRouter } from "next/navigation";
 import { useModulesOverview } from "@/lib/hooks/useApi";
 import { useProgressStore } from "@/lib/state/progressStore";
@@ -37,6 +36,7 @@ export default function ProfilePage() {
     try {
       await api.logout();
       logout();
+      useProgressStore.getState().reset();
       router.push("/login");
     } catch (error) {
       console.error("Logout failed:", error);
