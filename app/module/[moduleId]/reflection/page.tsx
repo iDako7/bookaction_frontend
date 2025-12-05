@@ -58,6 +58,7 @@ export default function ReflectionPage({ params }: PageProps) {
     // 2. Submit to backend
     try {
       await submitReflection.mutateAsync({
+        reflectionId: reflection?.id,
         userId,
         answer,
         timeSpent: 60, // Mock time

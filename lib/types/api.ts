@@ -73,6 +73,7 @@ export interface ConceptSummary {
 }
 
 export interface ModuleReflection {
+  id: number;
   type: "text";
   prompt: string;
   mediaUrl?: string;
