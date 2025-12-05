@@ -4,6 +4,7 @@ import "./globals.css";
 import { QueryProvider } from "@/lib/providers/QueryProvider";
 import { Header } from "@/components/layout/Header";
 import AuthGuard from "@/components/guards/AuthGuard";
+import { Toaster } from "sonner";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -27,6 +28,7 @@ export default function RootLayout({
           <AuthGuard>
             <Header />
             <main className="min-h-[calc(100vh-4rem)]">{children}</main>
+            <Toaster richColors position="top-center" />
           </AuthGuard>
         </QueryProvider>
       </body>

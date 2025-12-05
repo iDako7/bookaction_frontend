@@ -6,6 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/api/client";
+import { AxiosError } from "axios";
+import { toast } from "sonner";
 import { useAuthStore } from "@/lib/state/authStore";
 import { Button } from "@/components/ui/button";
 import {
@@ -28,16 +30,15 @@ import { Loader2 } from "lucide-react";
 import Link from "next/link";
 
 const formSchema = z.object({
-  username: z.string().min(2, "Username must be at least 2 characters"),
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  username: z.string(),
+  email: z.string(),
+  password: z.string(),
 });
 
 export function RegisterForm() {
   const router = useRouter();
   const login = useAuthStore((state) => state.login);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -50,14 +51,33 @@ export function RegisterForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    setError(null);
     try {
       const response = await api.register(values);
       login(response.user, response.token);
       router.push("/learn");
     } catch (err) {
-      console.error("Registration error:", err);
-      setError("Something went wrong. Please try again.");
+      if (err instanceof AxiosError && err.response?.data) {
+        const data = err.response.data;
+
+        // Handle Zod validation errors (array of errors)
+        if (
+          data.errors &&
+          Array.isArray(data.errors) &&
+          data.errors.length > 0
+        ) {
+          toast.error(data.errors[0].message);
+        }
+        // Handle generic message
+        else if (data.message) {
+          toast.error(data.message);
+        } else {
+          toast.error("An error occurred during registration.");
+        }
+      } else if (err instanceof Error) {
+        toast.error(err.message);
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -115,12 +135,6 @@ export function RegisterForm() {
                 </FormItem>
               )}
             />
-
-            {error && (
-              <div className="p-3 rounded-md bg-red-50 text-red-500 text-sm font-medium">
-                {error}
-              </div>
-            )}
 
             <Button
               type="submit"
